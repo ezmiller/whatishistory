@@ -20,8 +20,9 @@
 				placeholder: 'Your Country'
 			});
 		}
-		if (Parse.User.current().authenticated() === false) {
-			saveAnonymousUser(); }
+		if (Parse.User.current() == null) {
+			saveAnonymousUser();
+		}
 	}
 
 	// function fetchRecentDefn() {
