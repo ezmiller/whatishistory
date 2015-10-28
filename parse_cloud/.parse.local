@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "_default": {
+      "link": "whatishistory"
+    },
+    "whatishistory": {
+      "applicationId": "JSfVAQ9Qo25p2Zdyqk1KeIxt3lGXmpX0AM9TGp5Q"
+    }
+  }
+}
