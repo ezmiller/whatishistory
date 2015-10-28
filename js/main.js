@@ -77,7 +77,7 @@
 	}
 
 	function saveAnonymousUser() {
-		var u, num, hash;
+		var user, num, hash, token;
 		if (storageAvailable('localStorage') === false) {
 			return;
 		}
@@ -91,12 +91,14 @@
 		catch (e) {
 			console.error('Trouble generating hash: ', e);
 		}
-		var user = new Parse.User();
-		user.set("username", u);
-		user.set("password", hash.toString(CryptoJS.enc.Hex));
+		user = new Parse.User();
+		token = hash.toString(CryptoJS.enc.Hex);
+		user.set("username", token);
+		user.set("password", token);
 		user.signUp(null, {
-			success: function(user) {
-				console.log('signed up');
+			success: function(usr) {
+				usr.set('ip', myip);
+				usr.save();
 			},
 			error: function(user, error) {
 				// Show the error message somewhere and let the user try again.
