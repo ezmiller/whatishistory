@@ -25,25 +25,6 @@
 		}
 	}
 
-	// function fetchRecentDefn() {
-	// 	var query, Definition, sixMonthsAgo;
-
-	// 	var subtractMonths = function(date, months) {
-	// 		date.setMonth(date.getMonth - months);
-	// 		return date;
-	// 	};
-	// 	sixMonthsAgo = subtractMonths(new Date(), 6);
-
-	// 	Definition = Parse.Object.extend('Definition');
-	// 	query = new Parse.Query(Definition);
-	// 	query.equalTo("definedBy", Parse.User.current());
-	// 	query.greaterThan('createdAt', sixMonthsAgo);
-	// 	query.find().then(function(result) {
-	// 		var elem = document.getElementsByClassName('defnInput')[0];
-	// 		elem.innerHtml = result[0].
-	// 	});
-	// }
-
 	function saveDefn(e) {
 		var newDefn, Definition, acl;
 		e.preventDefault();
