@@ -75,7 +75,7 @@
 		if (profession.length > 0) defn.set('authorProfession', profession);
 		if (ctry.length > 0) defn.set('authorCountry', ctry);
 		defn.save().then(function() {
-			console.log('saved');
+			document.location = '/thankyou';
 		});
 	}
 
