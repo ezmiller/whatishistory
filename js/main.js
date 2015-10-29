@@ -15,11 +15,13 @@
 			"btvf1ywruhW5b3opO6WkrzeCp73jOsRETZ0diJ5B"
 		);
 
-		var elem = document.getElementById('defnSubmit');
+		var elem;
 		if ($('body').hasClass('home')) {
+			elem = document.getElementById('defnSubmit');
 			elem.addEventListener('click', saveDefn);
 		}
 		if ($('body').hasClass('followup')) {
+			elem = document.getElementById('submit');
 			elem.addEventListener('click', saveXtraData);
 			$('.ctrySelect').select2({
 				placeholder: 'Your Country'
@@ -62,7 +64,7 @@
 		profession = document.getElementById('profession').value.trim();
 		ctrySelect = document.getElementById('country');
 		ctry = ctrySelect.options[ctrySelect.selectedIndex].value;
-		Definition = Parse.Object.extend(DEFINTION);
+		Definition = Parse.Object.extend(DEFINITION);
 		defn = new Definition();
 		defn.set('id', getDefnId());
 		acl = new Parse.ACL();
