@@ -25,9 +25,12 @@
 				placeholder: 'Your Country'
 			});
 		}
-		if (Parse.User.current() == null) {
+
+		var currUser = Parse.User.current();
+		if (currUser === null) {
 			saveAnonymousUser();
 		}
+
 	}
 
 	function saveDefn(e) {
