@@ -24,7 +24,7 @@
 			elem = document.getElementById('submit');
 			elem.addEventListener('click', saveXtraData);
 			$('.ctrySelect').select2({
-				placeholder: 'Your Country'
+				placeholder: 'Your Location'
 			});
 		}
 
