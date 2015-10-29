@@ -1,15 +1,20 @@
 (function() {
 	'use strict';
 
+	// Parse Object Constants.
+	var DEFINITION = 'Definition';
+
 	window.onload = function() {
 		init();
 	};
 
 	function init() {
+
 		Parse.initialize(
 			"JSfVAQ9Qo25p2Zdyqk1KeIxt3lGXmpX0AM9TGp5Q",
 			"btvf1ywruhW5b3opO6WkrzeCp73jOsRETZ0diJ5B"
 		);
+
 		var elem = document.getElementById('defnSubmit');
 		if ($('body').hasClass('home')) {
 			elem.addEventListener('click', saveDefn);
@@ -28,7 +33,7 @@
 	function saveDefn(e) {
 		var newDefn, Definition, acl;
 		e.preventDefault();
-		Definition = Parse.Object.extend("Definition");
+		Definition = Parse.Object.extend(DEFINITION);
 		newDefn = new Definition();
 		var currUser = Parse.User.current();
 		newDefn.setACL(new Parse.ACL(Parse.User.current()));
@@ -54,7 +59,7 @@
 		profession = document.getElementById('profession').value.trim();
 		ctrySelect = document.getElementById('country');
 		ctry = ctrySelect.options[ctrySelect.selectedIndex].value;
-		Definition = Parse.Object.extend("Definition");
+		Definition = Parse.Object.extend(DEFINTION);
 		defn = new Definition();
 		defn.set('id', getDefnId());
 		acl = new Parse.ACL();
