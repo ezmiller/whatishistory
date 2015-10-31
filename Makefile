@@ -1,2 +1,4 @@
 deploy:
-	rsync -avz --progress --delete-after --exclude ".git" --exclude "parse_cloud" --exclude ".DS_Store" ./ whatishistory:live/
+	rm bundle.js
+	webpack -d
+	rsync -avz --progress --delete-excluded --exclude-from 'exclude_list.txt' ./ whatishistory:live/
