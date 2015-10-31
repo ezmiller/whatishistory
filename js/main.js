@@ -27,6 +27,7 @@
 				placeholder: 'Your Location'
 			});
 		}
+		setUpHumanTest();
 
 		var currUser = Parse.User.current();
 		if (currUser === null) {
@@ -45,10 +46,15 @@
 		newDefn.save({
 			'definedBy': currUser,
 			'definition': document.getElementsByClassName('defnInput')[0].value,
-			'definitionSubject': 'history'
+			'definitionSubject': 'history',
+			'mehuman': document.getElementById('mehuman').value
 		}).then(function(data) {
-			var id = data.id;
-			document.location = '/followup?id=' + id;
+			if (!data) {
+        return;
+			}
+			document.location = '/followup?id=' + data.id;
+		}).fail(function(x) {
+			alert('Sorry, there seems to be a problem. Please try again later.' + x.message);
 		});
 	}
 
@@ -133,6 +139,19 @@
 			return false;
 		}
 	}
+
+	function setUpHumanTest() {
+		var myforms = document.getElementsByTagName("form") ;
+		for (var i=0; i<myforms.length; i++) {
+			myforms[i].addEventListener("focus", markAsHuman);
+			myforms[i].addEventListener("click", markAsHuman);
+		}
+	}
+
+	function markAsHuman() {
+		document.getElementById("mehuman").value = "1";
+	}
+
 
 	function getRandomInt(min, max) {
 		return Math.floor(Math.random() * (max - min)) + min;
