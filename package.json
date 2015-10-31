@@ -1,0 +1,19 @@
+{
+  "name": "whatishistory",
+  "version": "0.0.1",
+  "description": "A website for collecting and presenting definitions of the history and the history profession.",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ezmiller/whatishistory.git"
+  },
+  "author": "Ethan Miller (@ezmiller)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ezmiller/whatishistory/issues"
+  },
+  "homepage": "https://github.com/ezmiller/whatishistory#readme"
+}

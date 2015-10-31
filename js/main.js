@@ -54,7 +54,7 @@
 			}
 			document.location = '/followup?id=' + data.id;
 		}).fail(function(x) {
-			alert('Sorry, there seems to be a problem. Please try again later.' + x.message);
+			alert('Sorry, there seems to be a problem. Please try again later.');
 		});
 	}
 
