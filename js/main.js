@@ -50,7 +50,7 @@
 			'mehuman': document.getElementById('mehuman').value
 		}).then(function(data) {
 			if (!data) {
-        return;
+				return;
 			}
 			document.location = '/followup?id=' + data.id;
 		}).fail(function(x) {
@@ -130,7 +130,7 @@
 	function storageAvailable(type) {
 		try {
 			var storage = window[type],
-				x = '__storage_test__';
+			x = '__storage_test__';
 			storage.setItem(x, x);
 			storage.removeItem(x);
 			return true;
