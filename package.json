@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ezmiller/whatishistory/issues"
   },
-  "homepage": "https://github.com/ezmiller/whatishistory#readme"
+  "homepage": "https://github.com/ezmiller/whatishistory#readme",
+  "dependencies": {
+    "webpack": "^1.12.2"
+  }
 }
