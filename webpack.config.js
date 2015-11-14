@@ -5,11 +5,4 @@ module.exports = {
 	output: {
 		filename: 'bundle.js'
 	},
-	plugins: [
-		new uglifyJsPlugin({
-			compress: {
-				warnings: false
-			}
-		})
-	]
 };
