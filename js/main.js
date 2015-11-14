@@ -16,7 +16,7 @@
 		);
 
 		var elem;
-		if ($('body').hasClass('home')) {
+		if ($('body').hasClass('defineit')) {
 			elem = document.getElementById('defnSubmit');
 			elem.addEventListener('click', saveDefn);
 		}
@@ -29,11 +29,50 @@
 		}
 		setUpHumanTest();
 
+		if ($('body').hasClass('home')) {
+			elem = document.getElementsByClassName('randomDefn')[0];
+			loadRandomDefn(elem);
+		}
+
 		var currUser = Parse.User.current();
+		// console.log('currUser:' , currUser);
 		if (currUser === null) {
 			saveAnonymousUser();
 		}
 
+	}
+
+	function loadRandomDefn(targetElem) {
+		getDefnCount().then(function(defnCount) {
+			var rand;
+			if (defnCount === 0) {
+				return;
+			}
+			rand = getRandomInt(0, defnCount);
+			getDefn(rand).then(function(defn) {
+				targetElem.innerHTML = defn.get('definition');
+			});
+		}).fail(function(err) {
+			console.error(err);
+		});
+	}
+
+	function getDefn(randInt) {
+		return Parse.Cloud.run('getDefn', {id: randInt})
+			.then(function(result) {
+				return result;
+			})
+			.fail(function(err) {
+				console.error(err);
+			});
+	}
+
+	function getDefnCount() {
+		return Parse.Cloud.run('getDefnCount').then(function(number) {
+			return number;
+		}).fail(function(err) {
+			console.error(err);
+		});
 	}
 
 	function saveDefn(e) {
@@ -152,7 +191,10 @@
 		document.getElementById("mehuman").value = "1";
 	}
 
-
+	/**
+	 * Gets random number, inclusive min and
+	 * exclusive max.
+	 */
 	function getRandomInt(min, max) {
 		return Math.floor(Math.random() * (max - min)) + min;
 	}
