@@ -51,7 +51,7 @@
 			rand = getRandomInt(0, defnCount);
 			getDefn(rand).then(function(defn) {
 				targetElem.innerHTML =
-					defn.get('definition') + ' -- ' + defn.get('author');
+					'"' + defn.get('definition') + '" -- ' + defn.get('author');
 			});
 		}).fail(function(err) {
 			console.error(err);
