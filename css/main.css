@@ -383,13 +383,13 @@ hr {
 header {
 	margin-top: 3.5rem;
 }
-.home .emailForm #emailSubmit {
+.defineit .emailForm #emailSubmit {
   margin-left: 1em;
 }
-.home .defnForm .defnInput {
+.defineit .defnForm .defnInput {
 	height: 30rem;
 }
-.home .defnForm .btnWrap {
+.defineit .defnForm .btnWrap {
 	text-align: left;
 }
 footer .footer-text {
