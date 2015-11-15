@@ -11,3 +11,29 @@ Parse.Cloud.beforeSave('Definition', function(req,resp) {
 		resp.success();
 	}
 });
+
+Parse.Cloud.define('getDefn', function(req, resp) {
+	var id = req.params.id;
+
+	Parse.Cloud.useMasterKey();
+
+	Definition = Parse.Object.extend('Definition');
+	query = new Parse.Query(Definition);
+	query.find().then(function(result) {
+		resp.success(result[id]);
+	});
+
+});
+
+Parse.Cloud.define('getDefnCount', function(req, resp) {
+	var Definition, query, defn;
+
+	Parse.Cloud.useMasterKey();
+
+	Definition = Parse.Object.extend('Definition');
+	query = new Parse.Query(Definition);
+	query.count().then(function(number) {
+		console.log(resp.success(number));
+	});
+
+});
