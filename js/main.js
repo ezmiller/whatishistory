@@ -77,14 +77,19 @@
   }
 
   function saveDefn(e) {
-    var newDefn, Definition, acl;
+    var newDefn, Definition, acl, currUser,
+        author;
     e.preventDefault();
     Definition = Parse.Object.extend(DEFINITION);
     newDefn = new Definition();
-    var currUser = Parse.User.current();
+    currUser = Parse.User.current();
+    author = document.getElementsByClassName('authorInput')[0].value;
+    if (author === '')
+      author = 'Anonymous';
     newDefn.setACL(new Parse.ACL(Parse.User.current()));
     newDefn.save({
       'definedBy': currUser,
+      'author': author,
       'definition': document.getElementsByClassName('defnInput')[0].value,
       'definitionSubject': 'history',
       'mehuman': document.getElementById('mehuman').value
@@ -106,7 +111,6 @@
     if (!id) {
       return;
     }
-    name = document.getElementById('name').value.trim();
     profession = document.getElementById('profession').value.trim();
     ctrySelect = document.getElementById('country');
     ctry = ctrySelect.options[ctrySelect.selectedIndex].value;
@@ -117,7 +121,6 @@
     acl.setPublicReadAccess(false);
     acl.setPublicWriteAccess(false);
     defn.setACL(acl);
-    if (name.length > 0) defn.set('author', name);
     if (profession.length > 0) defn.set('authorProfession', profession);
     if (ctry.length > 0) defn.set('authorCountry', ctry);
     defn.save().then(function() {
