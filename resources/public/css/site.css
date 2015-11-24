@@ -383,6 +383,11 @@ hr {
 header {
   margin-top: 3.5rem;
 }
+.home .author {
+  display: block;
+  text-align: right;
+  margin: 15px 30px 0 0;
+}
 .defineit .emailForm #emailSubmit {
   margin-left: 1em;
 }

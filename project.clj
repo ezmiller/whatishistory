@@ -41,8 +41,8 @@
   :resource-paths ["resources" "target/cljsbuild"]
 
   :minify-assets
-  {:assets
-    {"resources/public/css/site.min.css" "resources/public/css/site.css"}}
+  {:assets [{"resources/public/css/site.min.css" "resources/public/css/site.css"}
+            {"resources/public/js/parse.min.js" "resources/public/js/parse.js"}]}
 
   :cljsbuild {:builds {:app {:source-paths ["src/cljs" "src/cljc"]
                              :compiler {:output-to "target/cljsbuild/public/js/app.js"
@@ -74,6 +74,7 @@
                               :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"
                                                  ]
                               :css-dirs ["resources/public/css"]
+                              :js-dirs ["resources/public/js"]
                               :ring-handler whatishistory.handler/app}
 
                    :env {:dev true}

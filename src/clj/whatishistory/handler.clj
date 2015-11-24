@@ -26,13 +26,14 @@
     [:body
      mount-target
      (include-js "//www.parsecdn.com/js/parse-1.6.7.min.js")
+     (include-js "js/parse.js")
      (include-js "js/app.js")]]))
 
 
 (defroutes routes
   (GET "/" [] loading-page)
   (GET "/about" [] loading-page)
-  
+
   (resources "/")
   (not-found "Not Found"))
 
