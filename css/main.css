@@ -383,6 +383,9 @@ hr {
 header {
 	margin-top: 3.5rem;
 }
+.defineit .anothersDefn {
+  display: none;
+}
 .defineit .emailForm #emailSubmit {
   margin-left: 1em;
 }
@@ -392,11 +395,14 @@ header {
 .defineit .defnForm .btnWrap {
 	text-align: left;
 }
+.followup .followupForm {
+  display: none;
+}
 footer .footer-text {
 	font-size: 1.5rem;
 	color: #909090;
 }
-.followup #submit {
+.followup .submit {
 	margin-top: 2rem;
 }
 
