@@ -1,3 +1,5 @@
+var nameparser = require('humanname');
+
 (function() {
   'use strict';
 
@@ -17,17 +19,28 @@
 
     var elem;
     if ($('body').hasClass('defineit')) {
-      elem = document.getElementById('defnSubmit');
-      elem.addEventListener('click', saveDefn);
+      elem = document.getElementsByClassName('defnSubmit');
+      $.each(elem, function(i,el) {
+        el.addEventListener('click', saveDefn);
+      });
+      elem = document.getElementsByClassName('formToggle');
+      $.each(elem, function(i,el) {
+        el.addEventListener('click', toggleFormClick);
+      });
+      setUpHumanTest();
     }
     if ($('body').hasClass('followup')) {
-      elem = document.getElementById('submit');
-      elem.addEventListener('click', saveXtraData);
+      var followupMode = getParameterByName('mode');
+      $('.followupForm.' + followupMode).toggle();
+      elem = document.getElementsByClassName('submit');
+      $.each(elem, function(i,el) {
+        el.addEventListener('click', saveXtraData);
+      });
       $('.ctrySelect').select2({
-        placeholder: 'Your Location'
+        placeholder: followupMode === 'default' ?
+            'Your Location' : "Author's Location"
       });
     }
-    setUpHumanTest();
 
     if ($('body').hasClass('home')) {
       elem = document.getElementsByClassName('randomDefn')[0];
@@ -40,6 +53,19 @@
       saveAnonymousUser();
     }
 
+  }
+
+  function getDefnFormMode() {
+    return $('form:visible').hasClass('anothersDefn') ?
+        'anothers' : 'default';
+  }
+
+  function toggleFormClick(e) {
+    e.preventDefault();
+    var forms = document.getElementsByTagName('form');
+    $.map(forms, function(frm) {
+      $(frm).toggle();
+    });
   }
 
   function loadRandomDefn(targetElem) {
@@ -78,36 +104,48 @@
 
   function saveDefn(e) {
     var newDefn, Definition, acl, currUser,
-        author;
+        author, year, defnText, frmMode, frmIdx;
     e.preventDefault();
+    frmMode = getDefnFormMode();
+    frmIdx = frmMode === 'default' ? 0 : 1;
     Definition = Parse.Object.extend(DEFINITION);
     newDefn = new Definition();
     currUser = Parse.User.current();
-    author = document.getElementsByClassName('authorInput')[0].value;
+    defnText = document.getElementsByClassName('defnInput')[frmIdx].value;
+    author = document.getElementsByClassName('authorInput')[frmIdx].value;
+    year = document.getElementsByClassName('yearInput')[0].value;
+    year = (frmMode === 'anothers') ? new Date('1/1/'+year) : new Date();
     if (author === '')
       author = 'Anonymous';
+    if (frmMode == 'anothers' && nameIsValid(author) === false) {
+      alert('The name you entered is invalid. Please try again.');
+      return;
+    }
     newDefn.setACL(new Parse.ACL(Parse.User.current()));
     newDefn.save({
       'definedBy': currUser,
       'author': author,
-      'definition': document.getElementsByClassName('defnInput')[0].value,
+      'definition': defnText,
       'definitionSubject': 'history',
-      'mehuman': document.getElementById('mehuman').value
+      'mehuman': document.getElementById('mehuman').value,
+      'defnDate': year
     }).then(function(data) {
       if (!data) {
         return;
       }
-      document.location = '/followup?id=' + data.id;
+      document.location = '/followup?mode=' + frmMode + '&id=' + data.id;
     }).fail(function(x) {
+      console.log(x);
       alert('Sorry, there seems to be a problem. Please try again later.');
     });
   }
 
   function saveXtraData(e) {
+    console.log("savextradata");
     var Definition, acl, id, defn, name,
         profession, ctry, ctrySelect;
     e.preventDefault();
-    id = getDefnId();
+    id = getParameterByName('id');
     if (!id) {
       return;
     }
@@ -116,7 +154,7 @@
     ctry = ctrySelect.options[ctrySelect.selectedIndex].value;
     Definition = Parse.Object.extend(DEFINITION);
     defn = new Definition();
-    defn.set('id', getDefnId());
+    defn.set('id', getParameterByName('id'));
     acl = new Parse.ACL();
     acl.setPublicReadAccess(false);
     acl.setPublicWriteAccess(false);
@@ -125,14 +163,16 @@
     if (ctry.length > 0) defn.set('authorCountry', ctry);
     defn.save().then(function() {
       document.location = '/thankyou';
+    }).fail(function(x) {
+      console.error(x);
     });
   }
 
-  function getDefnId() {
-    if (location.search.length > 0) {
-      return location.search.split('=')[1];
-    }
-    else return false;
+  function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
 
   function saveAnonymousUser() {
@@ -169,6 +209,14 @@
   function anonymousUserExists() {
     return false;
   }
+
+  function nameIsValid(name) {
+    var parsed = nameparser.parse(name);
+    if (parsed.firstName === '' || parsed.lastName === '')
+      return false;
+    return true;
+  }
+
 
   function storageAvailable(type) {
     try {

@@ -21,7 +21,7 @@
     <div class="container">
       <div class="content row">
         <header>
-          <h2 class="title">What is history?</h2>
+          <h2 class="title">What is History?</h2>
         </header>
         <p class="instructions">
           The study of history has received many extended and authoritative analyses and definitions. The aim of this site is different: to assemble a very large corpus of definitions of the subject of history and its study by a wide range of people, and to make this data publicly available for computational analysis and re-representation.
@@ -46,11 +46,33 @@
               type="text"
               class="authorInput"
               placeholder="Your Name (Optional)" />
+            <a class="button formToggle" href="">Add another author's definition</a>
             <textarea
               class="defnInput twelve columns"
               placeholder="Please compose your definition here..."></textarea>
             <div class="btnWrap">
-              <button class="button-primary" id="defnSubmit">Submit</button>
+              <button class="button-primary defnSubmit">Submit</button>
+            </div>
+          </div>
+        </form>
+        <form class="defnForm anothersDefn">
+          <div class="fieldsWrap">
+            <input type="hidden" id="mehuman" value="0" />
+            <input
+              type="text"
+              class="authorInput"
+              placeholder="Author's Name" />
+            <input
+              type="text"
+              class="yearInput"
+              maxlength="4"
+              placeholder="Enter Year (YYYY)" />
+            <a class="button formToggle" href="">Add your own definition</a>
+            <textarea
+              class="defnInput twelve columns"
+              placeholder="Please type the definition here..."></textarea>
+            <div class="btnWrap">
+              <button class="button-primary defnSubmit">Submit</button>
             </div>
           </div>
         </form>
