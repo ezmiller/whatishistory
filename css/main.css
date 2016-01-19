@@ -383,6 +383,10 @@ hr {
 header {
 	margin-top: 3.5rem;
 }
+.home .defn-cta {
+  color: white;
+  background: #ff0033;
+}
 .defineit .anothersDefn {
   display: none;
 }
