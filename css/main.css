@@ -387,6 +387,10 @@ header {
   color: white;
   background: #ff0033;
 }
+.home .why-contribute-cta {
+  font-size: 80%;
+  text-decoration: none;
+}
 .defineit .anothersDefn {
   display: none;
 }
