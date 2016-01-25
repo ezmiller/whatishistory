@@ -394,8 +394,23 @@ header {
 .defineit .anothersDefn {
   display: none;
 }
-.defineit .emailForm #emailSubmit {
-  margin-left: 1em;
+.defineit .emailInput,
+.defineit .emailConfirm {
+  width: 28%;
+}
+.defineit .emailIsValid.yes .check {
+  display: inline;
+  color: yellow;
+}
+.defineit .emailIsValid.no .check {
+  display: none;
+}
+.defineit .emailIsValid.yes .x-mark {
+  display: none;
+}
+.defineit .emailIsValid.no .x-mark {
+  display: inline;
+  color: red;
 }
 .defineit .defnForm .defnInput {
 	height: 30rem;
