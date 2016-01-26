@@ -1,3 +1,6 @@
+serve:
+	python -m SimpleHTTPServer
+
 deploy:
 	rm bundle.js
 	webpack -d -p
