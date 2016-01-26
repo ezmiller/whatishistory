@@ -48,7 +48,7 @@
 
 (defn defn-form-content []
   [:form {:class "defnForm"}
-   [:div {:class "fieldWrap"}
+   [:div {:class "fieldsWrap"}
     [:input {:type "text"
              :class "authorInput"
              :placeholder "Your Name (Optional)"}]
