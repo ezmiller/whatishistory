@@ -46,6 +46,28 @@
 ;; -------------------------
 ;; Components
 
+(defn defn-form-content []
+  [:form {:class "defnForm"}
+   [:div {:class "fieldWrap"}
+    [:input {:type "text"
+             :class "authorInput"
+             :placeholder "Your Name (Optional)"}]
+    [:br]
+    [:input {:type "email"
+             :class "emailInput"
+             :placeholder "Enter Your Email"}]
+    [:input {:type "email"
+             :class "emailConfirm"
+             :placeholder "Enter Your Email"}]
+    [:span {:class "emailIsConfirmed no"}]
+    [:textarea {:class "defnInput twelve columns"
+                :placeholder "Please compose your definition here..."}]
+    [:div {:class "btnWrap"}
+     [:button {:class "button-primary defnSubmit"} "Submit"]]]])
+
+(defn defn-form []
+  [defn-form-content])
+
 (defn definition [defn-atom]
   (fn [defn-atom]
     (if-not (= (get @defn-atom :text) "")
@@ -69,13 +91,32 @@
   (fn []
     (get-rand-defn)
     [:div {:class "container home"}
-     [:header [:h2 {:class "title"} "What is history?"]]
+     [:header [:h2 {:class "title"} "What is History?"]]
      [definition defn-atom]
+     [:a {:href "/defineit"} "Contribute Your Own Definition"]
      [footer]]))
 
-(defn about-page []
-  [:div [:h2 "About whatishistory"]
-   [:div [:a {:href "/"} "go to the home page"]]])
+(defn defineit-page []
+  (fn []
+    [:div {:class "container defineit"}
+     [:header [:h2 {:class "title"} "What is History?"]]
+     [:p "The study of history has received many extended and
+          authoritative analyses and definitions. The aim of
+          this site is different: to assemble a very large
+          corpus of definitions of the subject of history and
+          its study by a wide range of people, and to make this
+          data publicly available for computational analysis and
+          re-representation."]
+     [:p [:b "Instructions:"] " Simply take a stab at defining history as
+          you understand it at the moment. Please don't spent too
+          much time. Ten minutes should be sufficient. It is also
+          okay to cite another author who you feel expresses things
+          clearly."]
+     [defn-form]]))
+
+; (defn about-page []
+;   [:div [:h2 "About whatishistory"]
+;    [:div [:a {:href "/"} "go to the home page"]]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
@@ -86,8 +127,11 @@
 (secretary/defroute "/" []
   (session/put! :current-page #'home-page))
 
-(secretary/defroute "/about" []
-  (session/put! :current-page #'about-page))
+(secretary/defroute "/defineit" []
+  (session/put! :current-page #'defineit-page))
+
+; (secretary/defroute "/about" []
+;   (session/put! :current-page #'about-page))
 
 ;; -------------------------
 ;; Initialize app
