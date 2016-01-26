@@ -398,17 +398,17 @@ header {
 .defineit .emailConfirm {
   width: 28%;
 }
-.defineit .emailIsValid.yes .check {
+.defineit .emailIsConfirmed.yes .check {
   display: inline;
   color: yellow;
 }
-.defineit .emailIsValid.no .check {
+.defineit .emailIsConfirmed.no .check {
   display: none;
 }
-.defineit .emailIsValid.yes .x-mark {
+.defineit .emailIsConfirmed.yes .x-mark {
   display: none;
 }
-.defineit .emailIsValid.no .x-mark {
+.defineit .emailIsConfirmed.no .x-mark {
   display: inline;
   color: red;
 }
