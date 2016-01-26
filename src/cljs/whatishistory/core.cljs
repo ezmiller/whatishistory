@@ -52,6 +52,7 @@
     [:input {:type "text"
              :class "authorInput"
              :placeholder "Your Name (Optional)"}]
+    [:a {:class "button formToggle"} "Add Another Author's Definition"]
     [:br]
     [:input {:type "email"
              :class "emailInput"
