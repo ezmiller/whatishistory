@@ -156,38 +156,57 @@ var nameparser = require('humanname');
       return;
     }
 
-    frmMode = getDefnFormMode();
-    frmIdx = frmMode === 'default' ? 0 : 1;
-    Definition = Parse.Object.extend(DEFINITION);
-    newDefn = new Definition();
-    currUser = Parse.User.current();
-    defnText = document.getElementsByClassName('defnInput')[frmIdx].value;
-    author = document.getElementsByClassName('authorInput')[frmIdx].value;
-    year = document.getElementsByClassName('yearInput')[0].value;
-    year = (frmMode === 'anothers') ? new Date('1/1/'+year) : new Date();
-    if (author === '')
-      author = 'Anonymous';
-    if (frmMode == 'anothers' && nameIsValid(author) === false) {
-      alert('The name you entered is invalid. Please try again.');
-      return;
-    }
-    newDefn.setACL(new Parse.ACL(Parse.User.current()));
-    newDefn.save({
-      'definedBy': currUser,
-      'author': author,
-      'definition': defnText,
-      'definitionSubject': 'history',
-      'mehuman': document.getElementById('mehuman').value,
-      'defnDate': year
-    }).then(function(data) {
-      if (!data) {
+    // First save the user's email b/c it goes in a separate table
+    // definitions table.
+    saveEmail().then(function() {
+
+      frmMode = getDefnFormMode();
+      frmIdx = frmMode === 'default' ? 0 : 1;
+      Definition = Parse.Object.extend(DEFINITION);
+      newDefn = new Definition();
+      currUser = Parse.User.current();
+      defnText = document.getElementsByClassName('defnInput')[frmIdx].value;
+      author = document.getElementsByClassName('authorInput')[frmIdx].value;
+      year = document.getElementsByClassName('yearInput')[0].value;
+      year = (frmMode === 'anothers') ? new Date('1/1/'+year) : new Date();
+      if (author === '')
+        author = 'Anonymous';
+      if (frmMode == 'anothers' && nameIsValid(author) === false) {
+        alert('The name you entered is invalid. Please try again.');
         return;
       }
-      document.location = '/followup?mode=' + frmMode + '&id=' + data.id;
+      newDefn.setACL(new Parse.ACL(Parse.User.current()));
+      newDefn.save({
+        'definedBy': currUser,
+        'author': author.trim(),
+        'definition': defnText.trim(),
+        'definitionSubject': 'history',
+        'mehuman': document.getElementById('mehuman').value,
+        'defnDate': year
+      }).then(function(data) {
+        if (!data) {
+          return;
+        }
+        document.location = '/followup?mode=' + frmMode + '&id=' + data.id;
+      }).fail(function(x) { throw x; });
+
     }).fail(function(x) {
       console.log(x);
-      alert('Sorry, there seems to be a problem. Please try again later.');
+      alert('Sorry, there seems to be a problem. Please try again.');
     });
+
+
+  }
+
+  // Returns a promise.
+  function saveEmail() {
+    var currUser, email;
+    currUser = Parse.User.current();
+    if (!currUser)
+      return;
+    email = document.getElementsByClassName('emailInput')[0].value.trim();
+    currUser.setEmail(email);
+    return currUser.save();
   }
 
   function saveXtraData(e) {
