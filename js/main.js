@@ -27,6 +27,10 @@ var nameparser = require('humanname');
       $.each(elem, function(i,el) {
         el.addEventListener('click', toggleFormClick);
       });
+      elem = document.querySelectorAll('input[type=email]');
+      $.each(elem, function(i,el) {
+        el.addEventListener('input', handleEmailInputsUpdate);
+      });
       setUpHumanTest();
     }
     if ($('body').hasClass('followup')) {
@@ -68,6 +72,40 @@ var nameparser = require('humanname');
     });
   }
 
+  function handleEmailInputsUpdate(e) {
+    var confirmed = emailIsConfirmed();
+    e.preventDefault();
+    setEmailConfirmedMark(confirmed);
+  }
+
+  function emailIsConfirmed() {
+    var emailInputs, confirmed;
+    emailInputs = document.querySelectorAll('input[type=email]');
+    confirmed = (
+      (emailInputs[0].value == emailInputs[1].value) &&
+      (emailInputs[0].value !== '' && emailInputs[1].value !== '')
+    );
+    return confirmed;
+  }
+
+  function emailsAreValid() {
+    var emailInputs;
+    emailInputs =
+        [].slice.call(document.querySelectorAll('input[type=email]'));
+    return emailInputs.every(function(el) {
+      console.log(el.checkValidity())
+      return el.checkValidity();
+    });
+  }
+
+  function setEmailConfirmedMark(confirmed) {
+    var isConfirmedEl = document.getElementsByClassName('emailIsConfirmed')[0];
+    if (confirmed)
+      $(isConfirmedEl).removeClass('no').addClass('yes');
+    else
+      $(isConfirmedEl).removeClass('yes').addClass('no');
+  }
+
   function loadRandomDefn(targetElem) {
     getDefnCount().then(function(defnCount) {
       var rand;
@@ -105,7 +143,19 @@ var nameparser = require('humanname');
   function saveDefn(e) {
     var newDefn, Definition, acl, currUser,
         author, year, defnText, frmMode, frmIdx;
+
     e.preventDefault();
+
+    if (!emailIsConfirmed()) {
+      alert('Please confirm your email before submitting your definition.');
+      return;
+    }
+
+    if (!emailsAreValid()) {
+      alert('You entered an invalid email. Please correct.');
+      return;
+    }
+
     frmMode = getDefnFormMode();
     frmIdx = frmMode === 'default' ? 0 : 1;
     Definition = Parse.Object.extend(DEFINITION);
