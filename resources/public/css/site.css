@@ -381,28 +381,52 @@ hr {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
 header {
-  margin-top: 3.5rem;
+	margin-top: 3.5rem;
 }
-.home .author {
-  display: block;
-  text-align: right;
-  margin: 15px 30px 0 0;
+.home .defn-cta {
+  color: white;
+  background: #ff0033;
 }
-.defineit .emailForm #emailSubmit {
-  margin-left: 1em;
+.home .why-contribute-cta {
+  font-size: 80%;
+  text-decoration: none;
+}
+.defineit .anothersDefn {
+  display: none;
+}
+.defineit .emailInput,
+.defineit .emailConfirm {
+  width: 44%;
+}
+.defineit .emailIsConfirmed.yes .check {
+  display: inline;
+  color: #17ff33;
+}
+.defineit .emailIsConfirmed.no .check {
+  display: none;
+}
+.defineit .emailIsConfirmed.yes .x-mark {
+  display: none;
+}
+.defineit .emailIsConfirmed.no .x-mark {
+  display: inline;
+  color: red;
 }
 .defineit .defnForm .defnInput {
-  height: 30rem;
+	height: 30rem;
 }
 .defineit .defnForm .btnWrap {
-  text-align: left;
+	text-align: left;
+}
+.followup .followupForm {
+  display: none;
 }
 footer .footer-text {
-  font-size: 1.5rem;
-  color: #909090;
+	font-size: 1.5rem;
+	color: #909090;
 }
-.followup #submit {
-  margin-top: 2rem;
+.followup .submit {
+	margin-top: 2rem;
 }
 
 /* Media Queries
