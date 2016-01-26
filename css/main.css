@@ -396,11 +396,11 @@ header {
 }
 .defineit .emailInput,
 .defineit .emailConfirm {
-  width: 28%;
+  width: 44%;
 }
 .defineit .emailIsConfirmed.yes .check {
   display: inline;
-  color: yellow;
+  color: #17ff33;
 }
 .defineit .emailIsConfirmed.no .check {
   display: none;
