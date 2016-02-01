@@ -26,6 +26,8 @@
      (include-css (if (env :dev) "css/site.css" "css/site.min.css"))]
     [:body
      mount-target
+     [:script {:type "text/javascript"} "var userip; function getIP() { return myip }"]
+     (include-js "//l2.io/ip.js?var=myip")
      (include-js "//www.parsecdn.com/js/parse-1.6.7.min.js")
      (include-js "js/parse.js")
      (include-js "js/app.js")]]))
