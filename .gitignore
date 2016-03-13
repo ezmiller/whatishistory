@@ -1,2 +1,6 @@
 target
 figwheel_server.log
+node_modules
+.lein-env
+.lein-repl-history
+bundle*
