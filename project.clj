@@ -59,7 +59,6 @@
                                   [lein-figwheel "0.5.0"]
                                   [org.clojure/tools.nrepl "0.2.12"]
                                   [com.cemerick/piggieback "0.1.5"]
-                                  
                                   [pjstadig/humane-test-output "0.7.0"]]
 
                    :source-paths ["env/dev/clj"]
