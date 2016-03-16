@@ -21,7 +21,50 @@
 ;                      #js {:success (fn [result] (js/console.log result))
 ;                           :error #(js/console.log %2)})))
 
-(def defn-atom (reagent/atom {:text "" :author ""}))
+(def app-atom (reagent/atom {}))
+
+(def ^:const parse-defn-class "Definition")
+
+; (defmacro handler-fn
+;   ([& body]
+;     `(fn [~'event] ~@body nil)))  ; always return nil
+
+(defn parse-init []
+  (js/Parse.initialize
+   "JSfVAQ9Qo25p2Zdyqk1KeIxt3lGXmpX0AM9TGp5Q"
+   "btvf1ywruhW5b3opO6WkrzeCp73jOsRETZ0diJ5B"))
+
+(defn generate-user-token []
+  (let [rand-str (str (js/Date.now) (rand 100000))
+        token (-> rand-str js/CryptoJS.SHA1 .toString)]
+    (str token)))
+
+; This returns a JS promise b/c that's what the signUp returns.
+(defn save-anonymous-user []
+    (let [user (js/Parse.User.)
+        token (generate-user-token)]
+    (.set user "username" token)
+    (.set user "password" token)
+    (.signUp user)))
+
+;(defn save-defn [app-atom]
+;  (let [Definition (js/Parse.Object.extend "Definition")
+;        new-defn (Definition.)
+;        new]
+;    (def defn-saved-promise (.then user-saved-promise
+;      (fn [new-defn]
+;        (.setACL new-defn usr)
+;        (.save new-defn #js {:definedby curr-user
+;                             :definition (get @app-atom :definition)
+;                             :author (condp = (get @app-atom :author)
+;                                       nil "Anonymous"
+;                                       "" "Anonymous"
+;                                       (get @app-atom :author))
+;                             :email (get @app-atom :email)
+;                             :definitionSubject "history"
+;                             :mehuman "1"}))))
+;    (.then defn-saved-promise #(js/console.log "defn saved!"))
+;    (.fail defn-saved-promise #(js/console.log "defn save failed.")))))
 
 (defn get-defn [idx]
   (js/Parse.Cloud.run
@@ -31,7 +74,7 @@
          (fn [result]
           (let [new-val {:text (.get result "definition")
                          :author (.get result "author")}]
-            (reset! defn-atom new-val)))
+            (reset! app-atom new-val)))
         :error #(js/console.log %2)}))
 
 (defn get-rand-defn []
@@ -46,35 +89,44 @@
 ;; -------------------------
 ;; Components
 
-(defn defn-form-content []
+(defn defn-form-content [app-atom]
   [:form {:class "defnForm"}
    [:div {:class "fieldsWrap"}
     [:input {:type "text"
              :class "authorInput"
-             :placeholder "Your Name (Optional)"}]
+             :placeholder "Your Name (Optional)"
+             :on-change (fn [evt]
+                          (swap! app-atom assoc :author evt.target.value))}]
     [:a {:class "button formToggle"} "Add Another Author's Definition"]
     [:br]
     [:input {:type "email"
              :class "emailInput"
-             :placeholder "Enter Your Email"}]
+             :placeholder "Enter Your Email"
+             :on-change (fn [evt]
+                          (swap! app-atom assoc :email evt.target.value))}]
     [:input {:type "email"
              :class "emailConfirm"
              :placeholder "Enter Your Email"}]
     [:span {:class "emailIsConfirmed no"}]
     [:textarea {:class "defnInput twelve columns"
-                :placeholder "Please compose your definition here..."}]
+                :placeholder "Please compose your definition here..."
+                :on-change (fn [evt]
+                            (swap! app-atom assoc :definition evt.target.value))}]
     [:div {:class "btnWrap"}
-     [:button {:class "button-primary defnSubmit"} "Submit"]]]])
+     [:button {:class "button-primary defnSubmit"
+               :on-click (fn [evt]
+                          (.preventDefault evt)
+                          (js/console.log "click"))} "Submit"]]]])
 
-(defn defn-form []
-  [defn-form-content])
+(defn defn-form [app-atom]
+  [defn-form-content app-atom])
 
-(defn definition [defn-atom]
-  (fn [defn-atom]
-    (if-not (= (get @defn-atom :text) "")
+(defn definition [app-atom]
+  (fn [app-atom]
+    (if-not (= (get @app-atom :text) "")
       [:section {:class "row"}
-       [:p {:class "ten columns"} (get @defn-atom :text)
-        [:span {:class "author"}" -- " (get @defn-atom :author)]]])))
+       [:p {:class "ten columns"} (get @app-atom :text)
+        [:span {:class "author"}" -- " (get @app-atom :author)]]])))
 
 (defn footer []
   [:footer
@@ -93,11 +145,16 @@
     (get-rand-defn)
     [:div {:class "container home"}
      [:header [:h2 {:class "title"} "What is History?"]]
-     [definition defn-atom]
+     [definition app-atom]
      [:a {:href "/defineit"} "Contribute Your Own Definition"]
      [footer]]))
 
 (defn defineit-page []
+  (parse-init)
+  (def usr-promise (save-anonymous-user))
+  (.then usr-promise (fn [usr]
+                       (.set usr "ip" (js/getIP))
+                       (.save usr)))
   (fn []
     [:div {:class "container defineit"}
      [:header [:h2 {:class "title"} "What is History?"]]
@@ -113,7 +170,7 @@
           much time. Ten minutes should be sufficient. It is also
           okay to cite another author who you feel expresses things
           clearly."]
-     [defn-form]]))
+     [defn-form app-atom]]))
 
 ; (defn about-page []
 ;   [:div [:h2 "About whatishistory"]
