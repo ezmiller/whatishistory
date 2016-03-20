@@ -39,13 +39,25 @@
         token (-> rand-str js/CryptoJS.SHA1 .toString)]
     (str token)))
 
-; This returns a JS promise b/c that's what the signUp returns.
 (defn save-anonymous-user []
     (let [user (js/Parse.User.)
         token (generate-user-token)]
-    (.set user "username" token)
-    (.set user "password" token)
-    (.signUp user)))
+      (.set user "username" token)
+      (.set user "password" token)
+      (def usr-promise (.signUp user))
+      (.then usr-promise (fn [usr]
+                           (js/console.log "saving user")
+                           (.set usr "ip" (js/getIP))
+                           (.save usr)
+                           (swap! app-atom assoc :curr-user usr)))))
+
+(defn set-user [app-atom]
+  (let [curr-user (js/Parse.User.current)]
+    (if (nil? curr-user) 
+      (save-anonymous-user)
+      (swap! app-atom assoc :curr-user curr-user))
+    (js/console.log (get @app-atom :curr-user))))
+
 
 ;(defn save-defn [app-atom]
 ;  (let [Definition (js/Parse.Object.extend "Definition")
@@ -151,10 +163,7 @@
 
 (defn defineit-page []
   (parse-init)
-  (def usr-promise (save-anonymous-user))
-  (.then usr-promise (fn [usr]
-                       (.set usr "ip" (js/getIP))
-                       (.save usr)))
+  (set-user app-atom) 
   (fn []
     [:div {:class "container defineit"}
      [:header [:h2 {:class "title"} "What is History?"]]
