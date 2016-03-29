@@ -56,27 +56,24 @@
     (if (nil? curr-user) 
       (save-anonymous-user)
       (swap! app-atom assoc :curr-user curr-user))
-    (js/console.log (get @app-atom :curr-user))))
+    (js/console.log "user: " (get @app-atom :curr-user))))
 
-
-;(defn save-defn [app-atom]
-;  (let [Definition (js/Parse.Object.extend "Definition")
-;        new-defn (Definition.)
-;        new]
-;    (def defn-saved-promise (.then user-saved-promise
-;      (fn [new-defn]
-;        (.setACL new-defn usr)
-;        (.save new-defn #js {:definedby curr-user
-;                             :definition (get @app-atom :definition)
-;                             :author (condp = (get @app-atom :author)
-;                                       nil "Anonymous"
-;                                       "" "Anonymous"
-;                                       (get @app-atom :author))
-;                             :email (get @app-atom :email)
-;                             :definitionSubject "history"
-;                             :mehuman "1"}))))
-;    (.then defn-saved-promise #(js/console.log "defn saved!"))
-;    (.fail defn-saved-promise #(js/console.log "defn save failed.")))))
+(defn save-defn [app-atom]
+  (let [Definition (js/Parse.Object.extend "Definition")
+        new-defn (Definition.)]
+    (.setACL new-defn (js/Parse.ACL. (.current js/Parse.User)))
+    (def new-defn-promise (.save new-defn #js {
+                         :definedby (get @app-atom :curr-user)
+                         :definition (get @app-atom :definition)
+                         :author (condp = (get @app-atom :author)
+                                   nil "Anonymous"
+                                   ""  "Anonymous"
+                                   (get @app-atom :author))
+                         :email (get @app-atom :email)
+                         :definitionSubject "history"
+                         :mehuman "1"}))
+    (.then new-defn-promise #(js/console.log "defn saved!"))
+    (.fail new-defn-promise #(js/alert "Something went wrong :/. Please try again."))))
 
 (defn get-defn [idx]
   (js/Parse.Cloud.run
@@ -128,7 +125,7 @@
      [:button {:class "button-primary defnSubmit"
                :on-click (fn [evt]
                           (.preventDefault evt)
-                          (js/console.log "click"))} "Submit"]]]])
+                          (save-defn app-atom))} "Submit"]]]])
 
 (defn defn-form [app-atom]
   [defn-form-content app-atom])
