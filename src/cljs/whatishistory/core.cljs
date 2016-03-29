@@ -46,7 +46,6 @@
       (.set user "password" token)
       (def usr-promise (.signUp user))
       (.then usr-promise (fn [usr]
-                           (js/console.log "saving user")
                            (.set usr "ip" (js/getIP))
                            (.save usr)
                            (swap! app-atom assoc :curr-user usr)))))
