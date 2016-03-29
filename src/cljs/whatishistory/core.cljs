@@ -71,7 +71,9 @@
                          :email (get @app-atom :email)
                          :definitionSubject "history"
                          :mehuman "1"}))
-    (.then new-defn-promise #(js/console.log "defn saved!"))
+    (.then new-defn-promise (fn [defn]
+                              (js/console.log "definition saved: " defn)
+                              (swap! app-atom assoc :defn-obj defn)))
     (.fail new-defn-promise #(js/alert "Something went wrong :/. Please try again."))))
 
 (defn get-defn [idx]
