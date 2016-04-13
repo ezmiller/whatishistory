@@ -137,13 +137,18 @@
       [:label {:for "profession"} "What is your profession?"]
       [:input {:type "text"
                :id "profession"
-               :placeholder "Your Profession"}]
+               :placeholder "Your Profession"
+               :on-change (fn [evt]
+                            (swap! app-atom assoc :profession evt.target.value))}]
       [:label {:for "country"} "Where are you at the moment?"]
-      [:select
+      [:select {:on-change (fn [evt]
+                            (swap! app-atom assoc :definition evt.target.value))}
        (for [country js/window.countries]
          [:option {:key (hash country)} country])]
       [:div
-       [:button {:class "button-primary submit"} "Submit"]]]])
+       [:button {:class "button-primary submit"
+                 :on-click (fn [evt]
+                             (.preventDefault evt))} "Submit"]]]])
 
 (defn defn-form [app-atom]
   [defn-form-content app-atom])
