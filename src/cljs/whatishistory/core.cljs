@@ -22,7 +22,7 @@
 ;                           :error #(js/console.log %2)})))
 
 (def app-atom (reagent/atom {}))
-
+(def countries-list js/window.countries)
 (def ^:const parse-defn-class "Definition")
 
 ; (defmacro handler-fn
@@ -128,8 +128,28 @@
                           (.preventDefault evt)
                           (save-defn app-atom))} "Submit"]]]])
 
+(defn xtra-info-form-content [app-atom]
+    [:form {:class "xtraInfoForm"}
+     [:p "Your contribution is greatly appreciated. If you are willing, it would
+          enrich the information being gathered here if you could provide some 
+          additional contextual information."]
+     [:div
+      [:label {:for "profession"} "What is your profession?"]
+      [:input {:type "text"
+               :id "profession"
+               :placeholder "Your Profession"}]
+      [:label {:for "country"} "Where are you at the moment?"]
+      [:select
+       (for [country js/window.countries]
+         [:option {:key (hash country)} country])]
+      [:div
+       [:button {:class "button-primary submit"} "Submit"]]]])
+
 (defn defn-form [app-atom]
   [defn-form-content app-atom])
+
+(defn xtra-info-form [app-atom]
+  [xtra-info-form-content app-atom])
 
 (defn definition [app-atom]
   (fn [app-atom]
@@ -177,7 +197,11 @@
           much time. Ten minutes should be sufficient. It is also
           okay to cite another author who you feel expresses things
           clearly."]
-     [defn-form app-atom]]))
+     [xtra-info-form app-atom]
+     ; (if (nil? (get @app-atom :defn-obj))
+     ;   [defn-form app-atom]
+     ;   [xtra-info-form app-atom])
+     ]))
 
 ; (defn about-page []
 ;   [:div [:h2 "About whatishistory"]

@@ -31,7 +31,8 @@
      (include-js "//www.parsecdn.com/js/parse-1.6.7.min.js")
      (include-js "js/parse.js")
      (include-js "//crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js")
-     (include-js "js/app.js")]]))
+     (include-js "js/app.js")
+     (include-js "js/countries.js")]]))
 
 
 (defroutes routes
