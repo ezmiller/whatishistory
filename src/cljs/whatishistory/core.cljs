@@ -76,6 +76,25 @@
                               (swap! app-atom assoc :defn-obj defn)))
     (.fail new-defn-promise #(js/alert "Something went wrong :/. Please try again."))))
 
+
+(defn save-xtra-info [app-atom]
+  (let [acl (js/Parse.ACL.)
+        curr-user (js/Parse.User.current)
+        defn-obj (get @app-atom :defn-obj)
+        profession (get @app-atom :profession)
+        country (get @app-atom :country)]
+    (if-not (nil? defn-obj)
+      (do
+        (.setPublicReadAccess acl false)
+        (.setPublicWriteAccess acl false)
+        (.setACL defn-obj acl)
+        (.set defn-obj "authorProfession" profession)
+        (.set defn-obj "authorCountry" country)
+        (def save-defn-promise (.save defn-obj))
+        (.then save-defn-promise #(js/console.log "saved xtra data"))
+        (.fail save-defn-promise (fn [err]
+                                 (js/console.error err)))))))
+    
 (defn get-defn [idx]
   (js/Parse.Cloud.run
    "getDefn"
@@ -148,7 +167,8 @@
       [:div
        [:button {:class "button-primary submit"
                  :on-click (fn [evt]
-                             (.preventDefault evt))} "Submit"]]]])
+                             (.preventDefault evt)
+                             (save-xtra-info app-atom))} "Submit"]]]])
 
 (defn defn-form [app-atom]
   [defn-form-content app-atom])
@@ -202,10 +222,10 @@
           much time. Ten minutes should be sufficient. It is also
           okay to cite another author who you feel expresses things
           clearly."]
-     [xtra-info-form app-atom]
-     ; (if (nil? (get @app-atom :defn-obj))
-     ;   [defn-form app-atom]
-     ;   [xtra-info-form app-atom])
+     ;[xtra-info-form app-atom]
+     (if (nil? (get @app-atom :defn-obj))
+       [defn-form app-atom]
+       [xtra-info-form app-atom])
      ]))
 
 ; (defn about-page []
