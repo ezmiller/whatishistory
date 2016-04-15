@@ -118,6 +118,9 @@
 ;; -------------------------
 ;; Components
 
+(defn email-confirmed [v1 v2]
+  (and (not (nil? v1)) (= v1 v2)))
+
 (defn defn-form-content [app-atom]
   [:form {:class "defnForm"}
    [:div {:class "fieldsWrap"}
@@ -135,8 +138,13 @@
                           (swap! app-atom assoc :email evt.target.value))}]
     [:input {:type "email"
              :class "emailConfirm"
-             :placeholder "Enter Your Email"}]
-    [:span {:class "emailIsConfirmed no"}]
+             :placeholder "Enter Your Email"
+             :on-change (fn [evt]
+                          (swap! app-atom assoc :email-confirm evt.target.value))}]
+    [:span {:class "emailConfirm"}
+     (if (email-confirmed (get @app-atom :email) (get @app-atom :email-confirm)) 
+       [:span {:class "check"} "\u2714"]
+       [:span {:class "x-mark"} "\u2718"])]
     [:textarea {:class "defnInput twelve columns"
                 :placeholder "Please compose your definition here..."
                 :on-change (fn [evt]
