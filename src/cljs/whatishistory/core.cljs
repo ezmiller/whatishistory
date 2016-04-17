@@ -212,10 +212,9 @@
              :on-change (fn [evt]
                           (swap! app-atom assoc :email-confirm evt.target.value))}]
     [:span {:class "emailConfirm"}
-     (if (email-confirmed app-atom) 
+     (if (email-confirmed app-atom)
        [:span {:class "check"} "\u2714"]
        [:span {:class "x-mark"} "\u2718"])]
-
     [:textarea {:class "defnInput twelve columns"
                 :placeholder "Please compose your definition here..."
                 :on-change (fn [evt]
