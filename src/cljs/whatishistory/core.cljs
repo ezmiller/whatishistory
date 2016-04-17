@@ -132,8 +132,24 @@
 ;; Components
 
 
+(defn defn-form-instructions []
+  [:div
+    [:p "The study of history has received many extended and
+         authoritative analyses and definitions. The aim of
+         this site is different: to assemble a very large
+         corpus of definitions of the subject of history and
+         its study by a wide range of people, and to make this
+         data publicly available for computational analysis and
+         re-representation."]
+    [:p [:b "Instructions:"] " Simply take a stab at defining history as
+             you understand it at the moment. Please don't spent too
+             much time. Ten minutes should be sufficient. It is also
+             okay to cite another author who you feel expresses things
+             clearly."]])
+
 (defn defn-form-content [app-atom]
   [:form {:class "defnForm"}
+   [defn-form-instructions]
    [:div {:class "fieldsWrap"}
     [:input {:type "text"
              :class "authorInput"
@@ -169,6 +185,7 @@
 
 (defn anothers-defn-form-content [app-atom]
   [:form {:class "anothersDefnForm"}
+   [defn-form-instructions]
    [:div {:class "fieldsWrap"}
     [:input {:type "text"
              :class "authorInput"
@@ -279,18 +296,6 @@
   (fn []
     [:div {:class "container defineit"}
      [:header [:h2 {:class "title"} "What is History?"]]
-     [:p "The study of history has received many extended and
-          authoritative analyses and definitions. The aim of
-          this site is different: to assemble a very large
-          corpus of definitions of the subject of history and
-          its study by a wide range of people, and to make this
-          data publicly available for computational analysis and
-          re-representation."]
-     [:p [:b "Instructions:"] " Simply take a stab at defining history as
-          you understand it at the moment. Please don't spent too
-          much time. Ten minutes should be sufficient. It is also
-          okay to cite another author who you feel expresses things
-          clearly."]
      ;[xtra-info-form app-atom]
      (if (nil? (get @app-atom :defn-obj))
        [defn-form app-atom]
