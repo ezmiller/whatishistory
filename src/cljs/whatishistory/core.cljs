@@ -52,16 +52,28 @@
 
 (defn set-user [app-atom]
   (let [curr-user (js/Parse.User.current)]
-    (if (nil? curr-user) 
+    (if (nil? curr-user)
       (save-anonymous-user)
       (swap! app-atom assoc :curr-user curr-user))
     (js/console.log "user: " (get @app-atom :curr-user))))
 
 
-(defn email-confirmed [app-atom]
+(defn email-confirmed [app-atom do-alert]
   (let [a (get @app-atom :email)
-        b (get @app-atom :email-confirm)]
-     (and (not (nil? a)) (= a b))))
+        b (get @app-atom :email-confirm)
+        email-provided (not (nil? a))
+        email-confirmed (= a b)]
+    (js/console.log "provided: " email-provided)
+    (js/console.log "confirmed: " email-confirmed)
+    (if-not (or (not email-provided) (not email-confirmed))
+      true
+      (condp = do-alert
+        false false
+        true (do
+                (cond
+                  (not email-provided) (js/alert "Please enter your email address.")
+                  (and email-provided (not email-confirmed)) (js/alert "Please confirm your email address."))
+                false)))))
 
 (defn save-defn [app-atom]
   (let [Definition (js/Parse.Object.extend "Definition")
@@ -79,15 +91,13 @@
                                  (get @app-atom :year))
                       :definitionSubject "history"
                       :mehuman "1"})
-    (js/console.log (email-confirmed app-atom))
-    (if (email-confirmed app-atom) 
+    (if (email-confirmed app-atom true)
       (do
          (def new-defn-promise (.save new-defn defn-js))
          (.then new-defn-promise (fn [defn]
                               (js/console.log "definition saved: " defn)
                               (swap! app-atom assoc :defn-obj defn)))
-         (.fail new-defn-promise #(js/alert "Something went wrong :/. Please try again.")))
-      (do (js/alert "Please enter and then confirm your email address.")))))
+         (.fail new-defn-promise #(js/alert "Something went wrong :/. Please try again."))))))
 
 
 (defn save-xtra-info [app-atom]
@@ -170,7 +180,7 @@
              :on-change (fn [evt]
                           (swap! app-atom assoc :email-confirm evt.target.value))}]
     [:span {:class "emailConfirm"}
-     (if (email-confirmed app-atom) 
+     (if (email-confirmed app-atom false)
        [:span {:class "check"} "\u2714"]
        [:span {:class "x-mark"} "\u2718"])]
     [:textarea {:class "defnInput twelve columns"
@@ -212,7 +222,7 @@
              :on-change (fn [evt]
                           (swap! app-atom assoc :email-confirm evt.target.value))}]
     [:span {:class "emailConfirm"}
-     (if (email-confirmed app-atom)
+     (if (email-confirmed app-atom false)
        [:span {:class "check"} "\u2714"]
        [:span {:class "x-mark"} "\u2718"])]
     [:textarea {:class "defnInput twelve columns"
