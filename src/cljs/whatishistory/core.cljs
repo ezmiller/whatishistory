@@ -57,24 +57,37 @@
       (swap! app-atom assoc :curr-user curr-user))
     (js/console.log "user: " (get @app-atom :curr-user))))
 
+
+(defn email-confirmed [app-atom]
+  (let [a (get @app-atom :email)
+        b (get @app-atom :email-confirm)]
+     (and (not (nil? a)) (= a b))))
+
 (defn save-defn [app-atom]
   (let [Definition (js/Parse.Object.extend "Definition")
+        frm-mode (get @app-atom :defn-form-mode)
         new-defn (Definition.)]
     (.setACL new-defn (js/Parse.ACL. (.current js/Parse.User)))
-    (def new-defn-promise (.save new-defn #js {
-                         :definedby (get @app-atom :curr-user)
-                         :definition (get @app-atom :definition)
-                         :author (condp = (get @app-atom :author)
-                                   nil "Anonymous"
-                                   ""  "Anonymous"
-                                   (get @app-atom :author))
-                         :email (get @app-atom :email)
-                         :definitionSubject "history"
-                         :mehuman "1"}))
-    (.then new-defn-promise (fn [defn]
+    (def defn-js #js {:definedby (get @app-atom :curr-user)
+                      :definition (get @app-atom :definition)
+                      :author (condp = (get @app-atom :author)
+                                 nil "Anonymous"
+                                 ""  "Anonymous"
+                                 (get @app-atom :author))
+                      :year (if (= frm-mode "default")
+                                 (.getFullYear (js/Date.))
+                                 (get @app-atom :year))
+                      :definitionSubject "history"
+                      :mehuman "1"})
+    (js/console.log (email-confirmed app-atom))
+    (if (email-confirmed app-atom) 
+      (do
+         (def new-defn-promise (.save new-defn defn-js))
+         (.then new-defn-promise (fn [defn]
                               (js/console.log "definition saved: " defn)
                               (swap! app-atom assoc :defn-obj defn)))
-    (.fail new-defn-promise #(js/alert "Something went wrong :/. Please try again."))))
+         (.fail new-defn-promise #(js/alert "Something went wrong :/. Please try again.")))
+      (do (js/alert "Please enter and then confirm your email address.")))))
 
 
 (defn save-xtra-info [app-atom]
@@ -94,7 +107,7 @@
         (.then save-defn-promise #(js/console.log "saved xtra data"))
         (.fail save-defn-promise (fn [err]
                                  (js/console.error err)))))))
-    
+
 (defn get-defn [idx]
   (js/Parse.Cloud.run
    "getDefn"
@@ -118,8 +131,6 @@
 ;; -------------------------
 ;; Components
 
-(defn email-confirmed [v1 v2]
-  (and (not (nil? v1)) (= v1 v2)))
 
 (defn defn-form-content [app-atom]
   [:form {:class "defnForm"}
@@ -143,7 +154,7 @@
              :on-change (fn [evt]
                           (swap! app-atom assoc :email-confirm evt.target.value))}]
     [:span {:class "emailConfirm"}
-     (if (email-confirmed (get @app-atom :email) (get @app-atom :email-confirm)) 
+     (if (email-confirmed app-atom) 
        [:span {:class "check"} "\u2714"]
        [:span {:class "x-mark"} "\u2718"])]
     [:textarea {:class "defnInput twelve columns"
