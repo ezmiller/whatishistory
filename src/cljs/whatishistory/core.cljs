@@ -63,8 +63,6 @@
         b (get @app-atom :email-confirm)
         email-provided (not (nil? a))
         email-confirmed (= a b)]
-    (js/console.log "provided: " email-provided)
-    (js/console.log "confirmed: " email-confirmed)
     (if-not (or (not email-provided) (not email-confirmed))
       true
       (condp = do-alert
