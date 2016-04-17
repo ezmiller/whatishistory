@@ -183,6 +183,22 @@
                           (swap! app-atom assoc :year evt.target.value))}]
     [:a {:class "button formToggle"
          :on-click #(swap! app-atom assoc :defn-form-mode "default")} "Add Your Own Definition"]
+    [:br]
+    [:input {:type "email"
+             :class "emailInput"
+             :placeholder "Enter Your Email"
+             :on-change (fn [evt]
+                          (swap! app-atom assoc :email evt.target.value))}]
+    [:input {:type "email"
+             :class "emailConfirm"
+             :placeholder "Enter Your Email"
+             :on-change (fn [evt]
+                          (swap! app-atom assoc :email-confirm evt.target.value))}]
+    [:span {:class "emailConfirm"}
+     (if (email-confirmed app-atom) 
+       [:span {:class "check"} "\u2714"]
+       [:span {:class "x-mark"} "\u2718"])]
+
     [:textarea {:class "defnInput twelve columns"
                 :placeholder "Please compose your definition here..."
                 :on-change (fn [evt]
