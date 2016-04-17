@@ -242,6 +242,7 @@
 
 (defn defineit-page []
   (parse-init)
+  (reset! app-atom {})
   (set-user app-atom) 
   (fn []
     [:div {:class "container defineit"}
