@@ -207,7 +207,12 @@
                              (save-xtra-info app-atom))} "Submit"]]]])
 
 (defn defn-form [app-atom]
-  [defn-form-content app-atom])
+  (if (nil? (get @app-atom :defn-form-mode))
+    (swap! app-atom assoc :defn-form-mode "default"))
+  (let [mode (get @app-atom :defn-form-mode)]
+    (if (= mode "default")
+      [defn-form-content app-atom]
+      [anothers-defn-form-content app-atom])))
 
 (defn xtra-info-form [app-atom]
   [xtra-info-form-content app-atom])
