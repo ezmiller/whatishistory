@@ -392,9 +392,6 @@ header {
   font-size: 80%;
   text-decoration: none;
 }
-.defineit .anothersDefn {
-  display: none;
-}
 .defineit .emailInput,
 .defineit .emailConfirm {
   width: 44%;
@@ -413,6 +410,7 @@ header {
   display: inline;
   color: red;
 }
+.defineit .anothersDefnForm .defnInput,
 .defineit .defnForm .defnInput {
 	height: 30rem;
 }

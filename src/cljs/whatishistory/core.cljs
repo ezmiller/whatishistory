@@ -129,7 +129,8 @@
              :placeholder "Your Name (Optional)"
              :on-change (fn [evt]
                           (swap! app-atom assoc :author evt.target.value))}]
-    [:a {:class "button formToggle"} "Add Another Author's Definition"]
+    [:a {:class "button formToggle"
+         :on-click #(swap! app-atom assoc :defn-form-mode "anothers")} "Add Another Author's Definition"]
     [:br]
     [:input {:type "email"
              :class "emailInput"
@@ -154,6 +155,33 @@
                :on-click (fn [evt]
                           (.preventDefault evt)
                           (save-defn app-atom))} "Submit"]]]])
+
+(defn anothers-defn-form-content [app-atom]
+  [:form {:class "anothersDefnForm"}
+   [:div {:class "fieldsWrap"}
+    [:input {:type "text"
+             :class "authorInput"
+             :placeholder "Author's Name"
+             :on-change (fn [evt]
+                          (swap! app-atom assoc :author evt.target.value))}]
+    [:input {:type "text"
+             :class "yearInput"
+             :placeholder "Enter Year (YYYY)"
+             :on-change (fn [evt]
+                          (js/console.log (@app-atom :year))
+                          (swap! app-atom assoc :year evt.target.value))}]
+    [:a {:class "button formToggle"
+         :on-click #(swap! app-atom assoc :defn-form-mode "default")} "Add Your Own Definition"]
+    [:textarea {:class "defnInput twelve columns"
+                :placeholder "Please compose your definition here..."
+                :on-change (fn [evt]
+                            (swap! app-atom assoc :definition evt.target.value))}]
+    [:div {:class "btnWrap"}
+     [:button {:class "button-primary defnSubmit"
+               :on-click (fn [evt]
+                          (.preventDefault evt)
+                          (save-defn app-atom))} "Submit"]]]])
+
 
 (defn xtra-info-form-content [app-atom]
     [:form {:class "xtraInfoForm"}
