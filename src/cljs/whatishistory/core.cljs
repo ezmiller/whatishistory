@@ -212,10 +212,11 @@
                           (swap! app-atom assoc :author evt.target.value))}]
     [:input {:type "text"
              :class "yearInput"
+             :max-length 4
              :placeholder "Enter Year (YYYY)"
              :on-change (fn [evt]
                           (js/console.log (@app-atom :year))
-                          (swap! app-atom assoc :year evt.target.value))}]
+                          (swap! app-atom assoc :year (js/parseInt evt.target.value)))}]
     [:a {:class "button formToggle"
          :on-click #(swap! app-atom assoc :defn-form-mode "default")} "Add Your Own Definition"]
     [:br]
