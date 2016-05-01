@@ -86,7 +86,7 @@
         frm-mode (get @app-atom :defn-form-mode)
         new-defn (Definition.)]
     (.setACL new-defn (js/Parse.ACL. (.current js/Parse.User)))
-    (def defn-data {:definedby (get @app-atom :curr-user)
+    (def defn-data {:definedBy (get @app-atom :curr-user)
                     :definition (get @app-atom :definition)
                     :author (condp = (get @app-atom :author)
                               nil "Anonymous"
