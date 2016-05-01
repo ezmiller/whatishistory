@@ -73,25 +73,34 @@
                   (and email-provided (not email-confirmed)) (js/alert "Please confirm your email address."))
                 false)))))
 
+(defn data-valid [defn-data frm-mode]
+  (let [nil-fields (filterv #(nil? (second %)) defn-data)]
+    (js/console.log (count nil-fields))
+    (if-not (> (count nil-fields) 0)
+      true
+      (do
+        (js/alert "Please complete the form.")
+        false))))
+
 (defn save-defn [app-atom]
   (let [Definition (js/Parse.Object.extend "Definition")
         frm-mode (get @app-atom :defn-form-mode)
         new-defn (Definition.)]
     (.setACL new-defn (js/Parse.ACL. (.current js/Parse.User)))
-    (def defn-js #js {:definedby (get @app-atom :curr-user)
-                      :definition (get @app-atom :definition)
-                      :author (condp = (get @app-atom :author)
-                                 nil "Anonymous"
-                                 ""  "Anonymous"
-                                 (get @app-atom :author))
-                      :year (if (= frm-mode "default")
-                                 (.getFullYear (js/Date.))
-                                 (get @app-atom :year))
-                      :definitionSubject "history"
-                      :mehuman "1"})
-    (if (email-confirmed app-atom true)
+    (def defn-data {:definedby (get @app-atom :curr-user)
+                    :definition (get @app-atom :definition)
+                    :author (condp = (get @app-atom :author)
+                              nil "Anonymous"
+                              ""  "Anonymous"
+                              (get @app-atom :author))
+                    :year (if (= frm-mode "default")
+                            (.getFullYear (js/Date.))
+                            (get @app-atom :year))
+                    :definitionSubject "history"
+                    :mehuman "1"})
+    (if (and (email-confirmed app-atom true) (data-valid defn-data frm-mode))
       (do
-         (def new-defn-promise (.save new-defn defn-js))
+         (def new-defn-promise (.save new-defn (clj->js defn-data)))
          (.then new-defn-promise (fn [defn]
                               (js/console.log "definition saved: " defn)
                               (swap! app-atom assoc :defn-obj defn)))
