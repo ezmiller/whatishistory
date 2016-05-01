@@ -268,6 +268,29 @@
                              (.preventDefault evt)
                              (save-xtra-info app-atom))} "Submit"]]]])
 
+(defn anothers-xtra-info-form-content [app-atom]
+  [:form {:class "anothersXtraInfoForm"}
+   [:p "Your contribution is greatly appreciated. If you are willing, it would
+          enrich the information being gathered here if you could provide some 
+          additional contextual information."]
+     [:div
+      [:label {:for "profession"} "What is the author's profession?"]
+      [:input {:type "text"
+               :id "profession"
+               :placeholder "Profession"
+               :on-change (fn [evt]
+                            (swap! app-atom assoc :profession evt.target.value))}]
+      [:label {:for "country"} "Where was the auth when she/he penned this definition?"]
+      [:select {:on-change (fn [evt]
+                            (swap! app-atom assoc :definition evt.target.value))}
+       (for [country js/window.countries]
+         [:option {:key (hash country)} country])]
+      [:div
+       [:button {:class "button-primary submit"
+                 :on-click (fn [evt]
+                             (.preventDefault evt)
+                             (save-xtra-info app-atom))} "Submit"]]]])
+
 (defn defn-form [app-atom]
   (if (nil? (get @app-atom :defn-form-mode))
     (swap! app-atom assoc :defn-form-mode "default"))
@@ -275,9 +298,6 @@
     (if (= mode "default")
       [defn-form-content app-atom]
       [anothers-defn-form-content app-atom])))
-
-(defn xtra-info-form [app-atom]
-  [xtra-info-form-content app-atom])
 
 (defn definition [app-atom]
   (fn [app-atom]
@@ -317,8 +337,9 @@
      ;[xtra-info-form app-atom]
      (if (nil? (get @app-atom :defn-obj))
        [defn-form app-atom]
-       [xtra-info-form app-atom])
-     ]))
+       (condp = (get @app-atom :defn-form-mode)
+         "default" [xtra-info-form-content app-atom]
+         "anothers" [anothers-xtra-info-form-content]))]))
 
 ; (defn about-page []
 ;   [:div [:h2 "About whatishistory"]
