@@ -75,7 +75,6 @@
 
 (defn data-valid [defn-data frm-mode]
   (let [nil-fields (filterv #(nil? (second %)) defn-data)]
-    (js/console.log (count nil-fields))
     (if-not (> (count nil-fields) 0)
       true
       (do
