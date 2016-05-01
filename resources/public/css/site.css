@@ -396,6 +396,12 @@ header {
 .defineit .emailConfirm {
   width: 44%;
 }
+.emailConfirm .x-mark {
+  color: red;
+}
+.emailConfirm .check {
+  color: #ffc000;
+}
 .defineit .anothersDefnForm .defnInput,
 .defineit .defnForm .defnInput {
 	height: 30rem;
