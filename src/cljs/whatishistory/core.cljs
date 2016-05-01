@@ -103,7 +103,9 @@
          (.then new-defn-promise (fn [defn]
                               (js/console.log "definition saved: " defn)
                               (swap! app-atom assoc :defn-obj defn)))
-         (.fail new-defn-promise #(js/alert "Something went wrong :/. Please try again."))))))
+         (.fail new-defn-promise (fn [err]
+                                   (js/console.error err.message)
+                                   (js/alert "Something went wrong :/. Please try again.")))))))
 
 
 (defn save-xtra-info [app-atom]
