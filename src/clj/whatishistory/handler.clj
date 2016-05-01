@@ -39,6 +39,7 @@
   (GET "/" [] loading-page)
   (GET "/about" [] loading-page)
   (GET "/defineit" [] loading-page)
+  (GET "/thankyou" [] loading-page)
 
   (resources "/")
   (not-found "Not Found"))

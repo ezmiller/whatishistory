@@ -122,7 +122,9 @@
         (.set defn-obj "authorProfession" profession)
         (.set defn-obj "authorCountry" country)
         (def save-defn-promise (.save defn-obj))
-        (.then save-defn-promise #(js/console.log "saved xtra data"))
+        (.then save-defn-promise (fn [evt]
+                                   (js/console.log "saved xtra data")
+                                   (set! js/window.location.href "/thankyou")))
         (.fail save-defn-promise (fn [err]
                                  (js/console.error err)))))))
 
@@ -242,7 +244,8 @@
      [:button {:class "button-primary defnSubmit"
                :on-click (fn [evt]
                           (.preventDefault evt)
-                          (save-defn app-atom))} "Submit"]]]])
+                          (save-defn app-atom)
+                          (js/document.location.href "/thankyou"))} "Submit"]]]])
 
 
 (defn xtra-info-form-content [app-atom]
@@ -341,6 +344,11 @@
          "default" [xtra-info-form-content app-atom]
          "anothers" [anothers-xtra-info-form-content]))]))
 
+(defn thankyou-page []
+  (fn []
+    [:div {:class "container thankyou"}
+     [:p "Thank you!"]]))
+
 ; (defn about-page []
 ;   [:div [:h2 "About whatishistory"]
 ;    [:div [:a {:href "/"} "go to the home page"]]])
@@ -356,6 +364,12 @@
 
 (secretary/defroute "/defineit" []
   (session/put! :current-page #'defineit-page))
+
+(secretary/defroute "/thankyou" []
+  (session/put! :current-page #'thankyou-page))
+
+(secretary/defroute "/login" []
+  (session/put! :current-page #'login-page))
 
 ; (secretary/defroute "/about" []
 ;   (session/put! :current-page #'about-page))
