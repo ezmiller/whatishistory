@@ -30,7 +30,8 @@
      (include-js "//l2.io/ip.js?var=myip")
      (include-js "//www.parsecdn.com/js/parse-1.6.7.min.js")
      (include-js "js/parse.js")
-     (include-js "//crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js")
+     (include-js "//cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js")
+     (include-js "///cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/sha1-min.js")
      (include-js "js/app.js")
      (include-js "js/countries.js")]]))
 
