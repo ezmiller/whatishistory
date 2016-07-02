@@ -58,20 +58,19 @@
     (js/console.log "user: " (get @app-atom :curr-user))))
 
 
-(defn email-confirmed [app-atom do-alert]
-  (let [a (get @app-atom :email)
-        b (get @app-atom :email-confirm)
-        email-provided (not (nil? a))
-        email-confirmed (= a b)]
-    (if-not (or (not email-provided) (not email-confirmed))
-      true
-      (condp = do-alert
-        false false
-        true (do
-                (cond
-                  (not email-provided) (js/alert "Please enter your email address.")
-                  (and email-provided (not email-confirmed)) (js/alert "Please confirm your email address."))
-                false)))))
+(defn login-user [app-atom]
+  (let [user (js/Parse.User.)
+        email (get @app-atom :email)
+        pass (get @app-atom :password)]
+    (.setUsername user email)
+    (.setPassword user pass)
+    (.logIn user)))
+
+(defn request-reset-link [evt]
+  (let [email (get @app-atom :email)]
+    (.preventDefault evt)
+    (def reset-request (.requestPasswordReset js/Parse.User email))
+    (.fail reset-request #(console.error %1))))
 
 (defn data-valid [defn-data frm-mode]
   (let [nil-fields (filterv #(nil? (second %)) defn-data)]
@@ -80,6 +79,41 @@
       (do
         (js/alert "Please complete the form.")
         false))))
+
+(defn save-email [app-atom]
+  (let [curr-user (js/Parse.User.current)
+        email (get @app-atom :email)]
+    (if-not (nil? curr-user)
+      (do
+        (.setEmail curr-user email)
+        (.setUsername curr-user email)
+        (def save-promise (.save curr-user))
+        (.fail save-promise
+          (fn [err]
+            (if (or (= err.code 203) (= err.code 202))
+              (swap! app-atom assoc :show-login true))
+            (js/console.error err)))
+        (.then save-promise (.save curr-user)))
+      (throw (js/Error. "Oop! There's no current user.")))))
+
+(defn email-confirmed [app-atom do-alert]
+  (let [a (get @app-atom :email)
+        b (get @app-atom :email-confirm)
+        curr-email (.get (get @app-atom :curr-user) "email")
+        email-provided (> (count a) 0)
+        email-confirmed (= a b)]
+    (if-not (or (not email-provided) (not email-confirmed))
+      true
+      (condp = do-alert
+        false false
+        true
+          (do
+            (cond
+              (not email-provided)
+                (js/alert "Please enter your email address.")
+              (and email-provided (not email-confirmed))
+                (js/Parse.initializelert "Please confirm your email address."))
+            false)))))
 
 (defn save-defn [app-atom]
   (let [Definition (js/Parse.Object.extend "Definition")
@@ -151,6 +185,65 @@
 ;; -------------------------
 ;; Components
 
+(defn login-modal [app-atom]
+  [:div {:class "modal login"}
+   [:div {:class "modal-content"}
+    [:span {:class "close"
+            :on-click
+              (fn [evt]
+                (swap! app-atom assoc :email)
+                (swap! app-atom assoc :email-confirm)
+                (swap! app-atom assoc :show-login false))} "x"]
+    [:h2 "Login"]
+    [:p "It is wonderful that you are contributing another definition to our collection.
+         So that we can link your definitions together, please login."]
+    [:input {:type "password"
+             :id "password"
+             :placeholder "Enter Password"
+             :on-change
+              (fn [evt]
+                (swap! app-atom assoc :password evt.target.value))}]
+    [:input {:type "submit"
+              :id "submit"
+              :on-click
+                (fn [evt]
+                  (def logout-promise (js/Parse.User.logOut))
+                  (.then logout-promise
+                    (fn [evt]
+                      (def login-promise (login-user app-atom))
+                      (.then login-promise
+                        (fn [usr]
+                          (swap! app-atom assoc :curr-user usr)
+                          (swap! app-atom assoc :show-login false)))
+                      (.fail login-promise #(console.error %1)))))}]
+    [:br]
+    [:span "Don't have a password yet? Click "
+     [:a {:href "" :on-click request-reset-link} "here"]
+     " to request that a password reset link be sent to your email."]]])
+
+(defn yes-click [evt]
+  (save-email app-atom)
+  (swap! app-atom assoc :show-change-email false))
+
+(defn no-click [evt]
+  (def email-on-record (.get (get @app-atom :curr-user) "email"))
+  (swap! app-atom assoc :email email-on-record)
+  (swap! app-atom assoc :email-confirm email-on-record)
+  (swap! app-atom assoc :show-change-email false))
+
+(defn change-email-modal [app-atom]
+  [:div {:class "modal change-email"}
+   [:div {:class "modal-content"}
+    [:span {:class "close"
+            :on-click
+              (fn [evt]
+                (swap! app-atom assoc :email-confirm "") 
+                (swap! app-atom assoc :show-change-email false))} "x"]
+    [:h2 "Change Email?"]
+    [:p "You are trying to confirm an email that is different than the one currently
+         associated with you. Do you want us to change the email that we have on record?"]
+    [:button {:on-click yes-click} "Yes"]
+    [:button {:on-click no-click} "No"]]])
 
 (defn defn-form-instructions []
   [:div
@@ -167,6 +260,34 @@
              okay to cite another author who you feel expresses things
              clearly."]])
 
+(defn email-confirm [app-atom]
+  [:div
+    [:input {:type "email"
+               :class "emailInput"
+               :placeholder "Enter Your Email"
+               :value (get @app-atom :email)
+               :on-change
+                (fn [evt]
+                  (swap! app-atom assoc :email evt.target.value))}]
+    [:input {:type "email"
+               :class "emailConfirm"
+               :placeholder "Enter Your Email"
+               :value (get @app-atom :email-confirm)
+               :on-change
+                 (fn [evt]
+                    (swap! app-atom assoc :email-confirm evt.target.value))}]
+    [:span {:class "emailConfirm"}
+    (if (email-confirmed app-atom false)
+      (do
+        (def confirmed (get @app-atom :email))
+        (def curr-email (.get (get @app-atom :curr-user) "email"))
+        (if (nil? curr-email)
+          (save-email app-atom))
+        (if (and (not (= curr-email confirmed)) (not (nil? confirmed)))
+          (swap! app-atom assoc :show-change-email true))
+        [:span {:class "check"} "\u2714"])
+      [:span {:class "x-mark"} "\u2718"])]])
+
 (defn defn-form-content [app-atom]
   [:form {:class "defnForm"}
    [defn-form-instructions]
@@ -179,20 +300,7 @@
     [:a {:class "button formToggle"
          :on-click #(swap! app-atom assoc :defn-form-mode "anothers")} "Add Another Author's Definition"]
     [:br]
-    [:input {:type "email"
-             :class "emailInput"
-             :placeholder "Enter Your Email"
-             :on-change (fn [evt]
-                          (swap! app-atom assoc :email evt.target.value))}]
-    [:input {:type "email"
-             :class "emailConfirm"
-             :placeholder "Enter Your Email"
-             :on-change (fn [evt]
-                          (swap! app-atom assoc :email-confirm evt.target.value))}]
-    [:span {:class "emailConfirm"}
-     (if (email-confirmed app-atom false)
-       [:span {:class "check"} "\u2714"]
-       [:span {:class "x-mark"} "\u2718"])]
+    [email-confirm app-atom]
     [:textarea {:class "defnInput twelve columns"
                 :placeholder "Please compose your definition here..."
                 :on-change (fn [evt]
@@ -222,20 +330,7 @@
     [:a {:class "button formToggle"
          :on-click #(swap! app-atom assoc :defn-form-mode "default")} "Add Your Own Definition"]
     [:br]
-    [:input {:type "email"
-             :class "emailInput"
-             :placeholder "Enter Your Email"
-             :on-change (fn [evt]
-                          (swap! app-atom assoc :email evt.target.value))}]
-    [:input {:type "email"
-             :class "emailConfirm"
-             :placeholder "Enter Your Email"
-             :on-change (fn [evt]
-                          (swap! app-atom assoc :email-confirm evt.target.value))}]
-    [:span {:class "emailConfirm"}
-     (if (email-confirmed app-atom false)
-       [:span {:class "check"} "\u2714"]
-       [:span {:class "x-mark"} "\u2718"])]
+    [email-confirm app-atom]
     [:textarea {:class "defnInput twelve columns"
                 :placeholder "Please compose your definition here..."
                 :on-change (fn [evt]
@@ -337,7 +432,8 @@
   (fn []
     [:div {:class "container defineit"}
      [:header [:h2 {:class "title"} "What is History?"]]
-     ;[xtra-info-form app-atom]
+     (if (get @app-atom :show-login) [login-modal app-atom])
+     (if (get @app-atom :show-change-email) [change-email-modal app-atom])
      (if (nil? (get @app-atom :defn-obj))
        [defn-form app-atom]
        (condp = (get @app-atom :defn-form-mode)
@@ -368,8 +464,8 @@
 (secretary/defroute "/thankyou" []
   (session/put! :current-page #'thankyou-page))
 
-(secretary/defroute "/login" []
-  (session/put! :current-page #'login-page))
+;; (secretary/defroute "/login" []
+;;   (session/put! :current-page #'login-page))
 
 ; (secretary/defroute "/about" []
 ;   (session/put! :current-page #'about-page))

@@ -420,6 +420,32 @@ footer .footer-text {
 	margin-top: 2rem;
 }
 
+
+/* Modal
+ * –––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.modal {
+  position: fixed;
+  width: 65%;
+  border: solid 1px;
+  border-radius: 4px;
+  margin-top: 15%;
+  padding: 20px;
+  background: white;
+  z-index: 1;
+  /* center */
+  transform: translateX(-50%);
+  left: 50%;
+}
+.modal .close {
+  position: absolute;
+  top: 8px;
+  right: 15px;
+  cursor: pointer;
+}
+.modal.change-email button {
+  margin-right: 10px;
+}
 /* Media Queries
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 /*
