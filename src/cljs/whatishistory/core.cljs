@@ -126,11 +126,13 @@
                               nil "Anonymous"
                               ""  "Anonymous"
                               (get @app-atom :author))
-                    :year (if (= frm-mode "default")
-                            (.getFullYear (js/Date.))
-                            (get @app-atom :year))
+                    :defnDate (if (= frm-mode "default")
+                                (js/Date.)
+                                (js/Date. (get @app-atom :year)))
                     :definitionSubject "history"
                     :mehuman "1"})
+    (if (= frm-mode "anothers")
+      (def defn_data (assoc defn-data :year (get @app-atom :year))))
     (if (and (email-confirmed app-atom true) (data-valid defn-data frm-mode))
       (do
          (def new-defn-promise (.save new-defn (clj->js defn-data)))
