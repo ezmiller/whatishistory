@@ -359,7 +359,8 @@
                             (swap! app-atom assoc :profession evt.target.value))}]
       [:label {:for "country"} "Where are you at the moment?"]
       [:select {:on-change (fn [evt]
-                            (swap! app-atom assoc :definition evt.target.value))}
+                            (swap! app-atom assoc :country evt.target.value))}
+         [:option {:key "select"} "Select Country"]
        (for [country js/window.countries]
          [:option {:key (hash country)} country])]
       [:div
@@ -380,9 +381,10 @@
                :placeholder "Profession"
                :on-change (fn [evt]
                             (swap! app-atom assoc :profession evt.target.value))}]
-      [:label {:for "country"} "Where was the auth when she/he penned this definition?"]
+      [:label {:for "country"} "Where was the author when she/he penned this definition?"]
       [:select {:on-change (fn [evt]
-                            (swap! app-atom assoc :definition evt.target.value))}
+                            (swap! app-atom assoc :country evt.target.value))}
+       [:option {:key "select"} "Select Country"]
        (for [country js/window.countries]
          [:option {:key (hash country)} country])]
       [:div
