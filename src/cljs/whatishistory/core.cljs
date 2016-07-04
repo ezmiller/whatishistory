@@ -440,7 +440,7 @@
        [defn-form app-atom]
        (condp = (get @app-atom :defn-form-mode)
          "default" [xtra-info-form-content app-atom]
-         "anothers" [anothers-xtra-info-form-content]))]))
+         "anothers" [anothers-xtra-info-form-content app-atom]))]))
 
 (defn thankyou-page []
   (fn []
