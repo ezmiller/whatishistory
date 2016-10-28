@@ -6,28 +6,9 @@
 
 (enable-console-print!)
 
-;; -------------------------
-;; Parse Utilities
-
-; (def definition (js/Parse.Object.extend "Definition"))
-
-; (def query (js/Parse.Query. definition))
-;
-; (.find query #js {:success (fn [result] (js/console.log result))
-;                   :error #(js/console.log %2)})
-
-; ((js/Parse.Cloud.run "getDefnCount"
-;                      ""
-;                      #js {:success (fn [result] (js/console.log result))
-;                           :error #(js/console.log %2)})))
-
 (def app-atom (reagent/atom {}))
 (def countries-list js/window.countries)
 (def ^:const parse-defn-class "Definition")
-
-; (defmacro handler-fn
-;   ([& body]
-;     `(fn [~'event] ~@body nil)))  ; always return nil
 
 (defn parse-init []
   (js/Parse.initialize
