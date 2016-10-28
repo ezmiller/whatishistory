@@ -52,49 +52,39 @@
                                         :optimizations :none
                                         :pretty-print  true}}}}
 
-  :profiles {:dev {:repl-options {:init-ns whatishistory.repl}
-
-                   :dependencies [[ring/ring-mock "0.3.0"]
-                                  [ring/ring-devel "1.4.0"]
-                                  [lein-figwheel "0.5.0"]
-                                  [org.clojure/tools.nrepl "0.2.12"]
-                                  [com.cemerick/piggieback "0.1.5"]
-                                  [pjstadig/humane-test-output "0.7.0"]]
-
-                   :source-paths ["env/dev/clj"]
-                   :plugins [[lein-figwheel "0.5.0"]
-                             ]
-
-                   :injections [(require 'pjstadig.humane-test-output)
+  :profiles {:dev
+              {:repl-options {:init-ns whatishistory.repl}
+               :dependencies [[ring/ring-mock "0.3.0"]
+                              [ring/ring-devel "1.4.0"]
+                              [lein-figwheel "0.5.0"]
+                              [org.clojure/tools.nrepl "0.2.12"]
+                              [com.cemerick/piggieback "0.1.5"]
+                              [pjstadig/humane-test-output "0.7.0"]]
+               :source-paths ["env/dev/clj"]
+               :plugins [[lein-figwheel "0.5.0"]]
+               :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]
+               :figwheel {:http-server-root "public"
+                          :server-port 3449
+                          :nrepl-port 7002
+                          :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"
+                                             ]
+                          :css-dirs ["resources/public/css"]
+                          :js-dirs ["resources/public/js"]
+                          :ring-handler whatishistory.handler/app}
+               :env {:dev true}
+               :cljsbuild {:builds
+                           {:app {:source-paths ["env/dev/cljs"]
+                                  :compiler {:main "whatishistory.dev"
+                                  :source-map true}}}}}
 
-                   :figwheel {:http-server-root "public"
-                              :server-port 3449
-                              :nrepl-port 7002
-                              :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"
-                                                 ]
-                              :css-dirs ["resources/public/css"]
-                              :js-dirs ["resources/public/js"]
-                              :ring-handler whatishistory.handler/app}
-
-                   :env {:dev true}
-
-                   :cljsbuild {:builds {:app {:source-paths ["env/dev/cljs"]
-                                              :compiler {:main "whatishistory.dev"
-                                                         :source-map true}}
-
-
-                                        }
-
-                               }}
-
-             :uberjar {:hooks [minify-assets.plugin/hooks]
-                       :prep-tasks ["compile" ["cljsbuild" "once"]]
-                       :env {:production true}
-                       :aot :all
-                       :omit-source true
-                       :cljsbuild {:jar true
-                                   :builds {:app
+              :uberjar {:hooks [minify-assets.plugin/hooks]
+                        :prep-tasks ["compile" ["cljsbuild" "once"]]
+                        :env {:production true}
+                        :aot :all
+                        :omit-source true
+                        :cljsbuild {:jar true
+                                    :builds {:app
                                              {:source-paths ["env/prod/cljs"]
                                               :compiler
                                               {:optimizations :advanced
