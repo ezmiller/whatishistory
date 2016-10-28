@@ -447,7 +447,8 @@
 (defn thankyou-page []
   (fn []
     [:div {:class "container thankyou"}
-     [:p "Thank you!"]]))
+     [:header [:h2 {:class "title"} "Thank you!"]]
+     [:a {:href "/defineit"} "Define Another"]]))
 
 ; (defn about-page []
 ;   [:div [:h2 "About whatishistory"]
