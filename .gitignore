@@ -1,3 +1,7 @@
+target
+figwheel_server.log
 node_modules
-bundle.js
-bundle.js.map
+.lein-env
+.lein-repl-history
+bundle*
+*.swp

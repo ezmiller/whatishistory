@@ -121,7 +121,7 @@ are based on 10px sizing. So basically 1.5rem = 15px :) */
 html {
   font-size: 62.5%; }
 body {
-	background: url('../images/lightpaperfibers.png');
+  background: url('../images/lightpaperfibers.png');
   font-size: 1.9em; /* currently ems cause chrome bug misinterpreting rems on body element */
   line-height: 1.6;
   font-weight: 400;
@@ -236,6 +236,7 @@ input[type="password"],
 textarea,
 select {
   height: 38px;
+  margin-right: 10px;
   padding: 6px 10px; /* The 6px vertically centers text on FF, ignored by Webkit */
   background-color: rgba(255,255,255,0.3);
   border: 1px solid #D1D1D1;
@@ -397,6 +398,21 @@ header {
 .defineit .emailForm #emailSubmit {
   margin-left: 1em;
 }
+.home .why-contribute-cta {
+  font-size: 80%;
+  text-decoration: none;
+}
+.defineit .emailInput,
+.defineit .emailConfirm {
+  width: 44%;
+}
+.emailConfirm .x-mark {
+  color: red;
+}
+.emailConfirm .check {
+  color: #ffc000;
+}
+.defineit .anothersDefnForm .defnInput,
 .defineit .defnForm .defnInput {
 	height: 30rem;
 }
@@ -414,6 +430,32 @@ footer .footer-text {
 	margin-top: 2rem;
 }
 
+
+/* Modal
+ * –––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.modal {
+  position: fixed;
+  width: 65%;
+  border: solid 1px;
+  border-radius: 4px;
+  margin-top: 15%;
+  padding: 20px;
+  background: white;
+  z-index: 1;
+  /* center */
+  transform: translateX(-50%);
+  left: 50%;
+}
+.modal .close {
+  position: absolute;
+  top: 8px;
+  right: 15px;
+  cursor: pointer;
+}
+.modal.change-email button {
+  margin-right: 10px;
+}
 /* Media Queries
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 /*
