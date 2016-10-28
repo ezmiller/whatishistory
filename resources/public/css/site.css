@@ -392,6 +392,16 @@ header {
   font-size: 80%;
   text-decoration: none;
 }
+.defineit .anothersDefn {
+  display: none;
+}
+.defineit .emailForm #emailSubmit {
+  margin-left: 1em;
+}
+.home .why-contribute-cta {
+  font-size: 80%;
+  text-decoration: none;
+}
 .defineit .emailInput,
 .defineit .emailConfirm {
   width: 44%;
