@@ -9,11 +9,7 @@
             [environ.core :refer [env]]))
 
 (def mount-target
-  [:div#app
-      [:h3 "ClojureScript has not been compiled!"]
-      [:p "please run "
-       [:b "lein figwheel"]
-       " in order to start the compiler"]])
+  [:div#app])
 
 (def loading-page
   (html
