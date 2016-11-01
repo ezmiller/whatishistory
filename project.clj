@@ -51,7 +51,7 @@
                      :compiler {:output-to "target/cljsbuild/public/js/app.js"
                                 :output-dir "target/cljsbuild/public/js/out"
                                 :asset-path   "js/out"
-                                :optimizations :whitespace
+                                :optimizations :advanced
                                 :pretty-print  true}}}}
 
   :profiles {:dev
@@ -89,4 +89,5 @@
                                    :builds {:app
                                             {:source-paths ["env/prod/cljs"]
                                              :compiler
-                                             {:optimizations :all                                                                  :pretty-print false}}}}}})
+                                             {:optimizations :advanced
+                                              :pretty-print false}}}}}})
