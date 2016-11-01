@@ -46,13 +46,12 @@
    "resources/public/css/site.min.css" "resources/public/css/site.css"
    "resources/public/js/parse.min.js" "resources/public/js/parse.js"}}
 
-  :cljsbuild {:builds
-              {:app {:source-paths ["src/cljs" "src/cljc"]
-                     :compiler {:output-to "target/cljsbuild/public/js/app.js"
-                                :output-dir "target/cljsbuild/public/js/out"
-                                :asset-path   "js/out"
-                                :optimizations :advanced
-                                :pretty-print  true}}}}
+  :cljsbuild {:builds {:app {:source-paths ["src/cljs" "src/cljc"]
+                             :compiler {:output-to "target/cljsbuild/public/js/app.js"
+                                        :output-dir "target/cljsbuild/public/js/out"
+                                        :asset-path   "js/out"
+                                        :optimizations :none
+                                        :pretty-print  true}}}}
 
   :profiles {:dev
               {:repl-options {:init-ns whatishistory.repl}
@@ -80,14 +79,14 @@
                                   :compiler {:main "whatishistory.dev"
                                   :source-map true}}}}}
 
-             :uberjar {:hooks [minify-assets.plugin/hooks]
-                       :prep-tasks ["compile" ["cljsbuild" "once"]]
-                       :env {:production true}
-                       :aot :all
-                       :omit-source true
-                       :cljsbuild {:jar true
-                                   :builds {:app
-                                            {:source-paths ["env/prod/cljs"]
-                                             :compiler
-                                             {:optimizations :advanced
-                                              :pretty-print false}}}}}})
+              :uberjar {:hooks [minify-assets.plugin/hooks]
+                        :prep-tasks ["compile" ["cljsbuild" "once"]]
+                        :env {:production true}
+                        :aot :all
+                        :omit-source true
+                        :cljsbuild {:jar true
+                                    :builds {:app
+                                             {:source-paths ["env/prod/cljs"]
+                                              :compiler
+                                              {:optimizations :advanced
+                                               :pretty-print false}}}}}})
