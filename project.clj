@@ -22,7 +22,7 @@
 
   :plugins [[lein-environ "1.0.1"]
             [lein-cljsbuild "1.1.1"]
-            [lein-asset-minifier "0.2.2"]]
+            [lein-asset-minifier "0.3.0"]]
 
   :ring {:handler whatishistory.handler/app
          :uberwar-name "whatishistory.war"}
@@ -41,9 +41,10 @@
   :resource-paths ["resources" "target/cljsbuild"]
 
   :minify-assets
-  {:assets [{"resources/public/css/normalze.min.css" "resources/public/css/normalize.css"}
-            {"resources/public/css/site.min.css" "resources/public/css/site.css"}
-            {"resources/public/js/parse.min.js" "resources/public/js/parse.js"}]}
+  {:assets
+   {"resources/public/css/normalze.min.css" "resources/public/css/normalize.css"
+   "resources/public/css/site.min.css" "resources/public/css/site.css"
+   "resources/public/js/parse.min.js" "resources/public/js/parse.js"}}
 
   :cljsbuild {:builds {:app {:source-paths ["src/cljs" "src/cljc"]
                              :compiler {:output-to "target/cljsbuild/public/js/app.js"
