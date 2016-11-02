@@ -42,7 +42,7 @@
 
   :minify-assets
   {:assets
-   {"resources/public/css/normalze.min.css" "resources/public/css/normalize.css"
+   {"resources/public/css/normalize.min.css" "resources/public/css/normalize.css"
    "resources/public/css/site.min.css" "resources/public/css/site.css"
    "resources/public/js/parse.min.js" "resources/public/js/parse.js"}}
 
