@@ -35,8 +35,7 @@
   (let [curr-user (js/Parse.User.current)]
     (if (nil? curr-user)
       (save-anonymous-user)
-      (swap! app-atom assoc :curr-user curr-user))
-    (js/console.log "user: " (get @app-atom :curr-user))))
+      (swap! app-atom assoc :curr-user curr-user))))
 
 
 (defn login-user [app-atom]
@@ -118,10 +117,8 @@
       (do
          (def new-defn-promise (.save new-defn (clj->js defn-data)))
          (.then new-defn-promise (fn [defn]
-                              (js/console.log "definition saved: " defn)
-                              (swap! app-atom assoc :defn-obj defn)))
+                                   (swap! app-atom assoc :defn-obj defn)))
          (.fail new-defn-promise (fn [err]
-                                   (js/console.error err.message)
                                    (js/alert "Something went wrong :/. Please try again.")))))))
 
 
@@ -140,10 +137,9 @@
         (.set defn-obj "authorCountry" country)
         (def save-defn-promise (.save defn-obj))
         (.then save-defn-promise (fn [evt]
-                                   (js/console.log "saved xtra data")
                                    (set! js/window.location.href "/thankyou")))
         (.fail save-defn-promise (fn [err]
-                                 (js/console.error err)))))))
+                                 (js/console.error "Something went wrong: " err)))))))
 
 (defn get-defn [idx]
   (js/Parse.Cloud.run
@@ -308,7 +304,6 @@
              :max-length 4
              :placeholder "Enter Year (YYYY)"
              :on-change (fn [evt]
-                          (js/console.log (@app-atom :year))
                           (swap! app-atom assoc :year (js/parseInt evt.target.value)))}]
     [:a {:class "button formToggle"
          :on-click #(swap! app-atom assoc :defn-form-mode "default")} "Add Your Own Definition"]
